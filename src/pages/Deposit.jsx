@@ -213,7 +213,7 @@ const Deposit = () => {
             {/* User Balance */}
             <Alert severity="info" sx={{ mb: 3 }}>
               <Typography>
-                Tu saldo actual: <strong>{user?.balance?.toFixed(2)} USDT</strong>
+                Tu saldo actual: <strong>{Number(user?.balance || 0).toFixed(2)} USDT</strong>
               </Typography>
             </Alert>
 

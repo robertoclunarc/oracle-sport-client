@@ -85,7 +85,18 @@ const EventCard = ({ event }) => {
   };
 
   return (
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Card sx={{ 
+      height: '100%', 
+      display: 'flex', 
+      flexDirection: 'column',
+      boxShadow: 2,
+      borderRadius: 2,
+      transition: 'all 0.3s ease-in-out',
+      '&:hover': {
+        boxShadow: 4,
+        transform: 'translateY(-2px)'
+      }
+    }}>
       <CardContent sx={{ flexGrow: 1 }}>
         {/* Header con info del evento */}
         <Box sx={{ mb: 2 }}>

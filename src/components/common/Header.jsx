@@ -201,7 +201,7 @@ const Header = ({ onDrawerToggle, onThemeToggle, themeMode }) => {
                   {user?.first_name} {user?.last_name}
                 </Typography>
                 <Typography variant="body2" color="success.main" sx={{ fontWeight: 'bold' }}>
-                  Saldo: {user?.balance?.toFixed(2)} USDT
+                  Saldo: {Number(user?.balance || 0).toFixed(2)} USDT
                 </Typography>
               </Box>
               

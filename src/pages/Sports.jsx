@@ -56,9 +56,9 @@ const Sports = () => {
         setSports(sportsData);
         
         // Cargar eventos
-        console.log('Cargando eventos para el deporte:', sportKey);
+        
         const eventsData = await getEvents(sportKey);
-        console.log('Eventos cargados:', eventsData);
+        
         setEvents(eventsData);
         setFilteredEvents(eventsData);
       } catch (error) {

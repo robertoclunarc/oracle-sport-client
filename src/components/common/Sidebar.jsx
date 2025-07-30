@@ -109,7 +109,7 @@ const Sidebar = ({ mobileOpen, onDrawerToggle }) => {
           </Typography>
           <Box sx={{ mt: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="body2">
-              Saldo: {user?.balance?.toFixed(2)} USDT
+              Saldo: {Number(user?.balance || 0).toFixed(2)} USDT
             </Typography>
             {user?.role === 'admin' && (
               <Chip 

@@ -49,9 +49,10 @@ export const AuthProvider = ({ children }) => {
   const loginUser = async (credentials) => {
     setLoading(true);
     setError(null);
-    
+    console.log("Attempting login with:", credentials);
     try {
       const response = await login(credentials);
+      console.log("Login successful, response:", response);
       localStorage.setItem('token', response.token);
       setUser(response.user);
       setIsAuthenticated(true);

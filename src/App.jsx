@@ -70,50 +70,48 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <AuthContext.Provider value={{ isAuthenticated: false, user: null, loading: false, login: () => {}, logout: () => {} }}>
-        <BettingProvider>
-          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Header 
+    <ThemeProvider theme={theme}>      
+      <BettingProvider>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <Header 
+            onDrawerToggle={handleDrawerToggle} 
+            onThemeToggle={toggleTheme} 
+            themeMode={themeMode} 
+          />
+          <Box sx={{ display: 'flex', flex: 1 }}>
+            <Sidebar 
+              mobileOpen={mobileOpen} 
               onDrawerToggle={handleDrawerToggle} 
-              onThemeToggle={toggleTheme} 
-              themeMode={themeMode} 
             />
-            <Box sx={{ display: 'flex', flex: 1 }}>
-              <Sidebar 
-                mobileOpen={mobileOpen} 
-                onDrawerToggle={handleDrawerToggle} 
-              />
-              <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, md: 3 }, width: '100%' }}>
-                <Routes>
-                  {/* Rutas públicas */}
-                  <Route path="/" element={<Home />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/sports" element={<Sports />} />
-                  <Route path="/sports/:sportKey" element={<Sports />} />
-                  <Route path="/event/:eventId" element={<EventDetails />} />
-                  
-                  {/* Rutas protegidas */}
-                  <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-                  <Route path="/deposit" element={<PrivateRoute><Deposit /></PrivateRoute>} />
-                  <Route path="/withdraw" element={<PrivateRoute><Withdraw /></PrivateRoute>} />
-                  <Route path="/bet-history" element={<PrivateRoute><BetHistory /></PrivateRoute>} />
-                  
-                  {/* Rutas de administrador */}
-                  <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-                  <Route path="/admin/users" element={<AdminRoute><ManageUsers /></AdminRoute>} />
-                  <Route path="/admin/bets" element={<AdminRoute><ManageBets /></AdminRoute>} />
-                  
-                  {/* Ruta 404 */}
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </Box>
+            <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, md: 3 }, width: '100%' }}>
+              <Routes>
+                {/* Rutas públicas */}
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/sports" element={<Sports />} />
+                <Route path="/sports/:sportKey" element={<Sports />} />
+                <Route path="/event/:eventId" element={<EventDetails />} />
+                
+                {/* Rutas protegidas */}
+                <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+                <Route path="/deposit" element={<PrivateRoute><Deposit /></PrivateRoute>} />
+                <Route path="/withdraw" element={<PrivateRoute><Withdraw /></PrivateRoute>} />
+                <Route path="/bet-history" element={<PrivateRoute><BetHistory /></PrivateRoute>} />
+                
+                {/* Rutas de administrador */}
+                <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+                <Route path="/admin/users" element={<AdminRoute><ManageUsers /></AdminRoute>} />
+                <Route path="/admin/bets" element={<AdminRoute><ManageBets /></AdminRoute>} />
+                
+                {/* Ruta 404 */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
             </Box>
-            <Footer />
           </Box>
-        </BettingProvider>
-      </AuthContext.Provider>
+          <Footer />
+        </Box>
+      </BettingProvider>      
     </ThemeProvider>
   );
 }

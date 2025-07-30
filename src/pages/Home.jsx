@@ -66,9 +66,11 @@ const Home = () => {
   };
 
   // Filtrar deportes principales
-  const mainSports = sports.filter(sport => 
-    ['Soccer', 'Basketball', 'Baseball', 'Ice Hockey'].includes(sport.group)
-  );
+  const mainSports = Array.isArray(sports)
+  ? sports.filter(sport =>
+      ['Soccer', 'Basketball', 'Baseball', 'Ice Hockey'].includes(sport.group)
+    )
+  : [];
 
   if (loading) {
     return <Loading />;

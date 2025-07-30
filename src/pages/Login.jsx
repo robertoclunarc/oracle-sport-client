@@ -45,6 +45,7 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      console.log("Submit pressed with:", values);
       try {
         await loginUser(values);
         enqueueSnackbar('¡Bienvenido a Oracle Sport!', { variant: 'success' });

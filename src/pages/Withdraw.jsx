@@ -253,7 +253,7 @@ const Withdraw = () => {
           {/* User Balance */}
           <Alert severity="info" sx={{ mb: 3 }}>
             <Typography>
-              Tu saldo disponible: <strong>{user?.balance?.toFixed(2)} USDT</strong>
+              Tu saldo disponible: <strong>{Number(user?.balance || 0).toFixed(2)} USDT</strong>
             </Typography>
           </Alert>
 

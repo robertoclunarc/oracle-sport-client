@@ -137,7 +137,7 @@ const BettingSlip = () => {
           fullWidth
           size="small"
           inputProps={{ min: 0, step: 1 }}
-          helperText={`Saldo disponible: ${user?.balance?.toFixed(2) || '0.00'} USDT`}
+          helperText={`Saldo disponible: ${Number(user?.balance || 0).toFixed(2)} USDT`}
         />
       </Box>
 
@@ -179,7 +179,7 @@ const BettingSlip = () => {
       {/* Validaciones */}
       {isAuthenticated && betAmount > user?.balance && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          Saldo insuficiente. Tu saldo actual es {user?.balance?.toFixed(2)} USDT
+          Saldo insuficiente. Tu saldo actual es {Number(user?.balance || 0).toFixed(2)} USDT
         </Alert>
       )}
 
