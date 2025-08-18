@@ -64,20 +64,21 @@ const EventCard = ({ event }) => {
   const organizedOdds = organizeOdds(event.odds);
 
   const handleBetClick = (oddsData, betType, selection, description) => {
-    const betItem = {
-      id: `${event.id}-${betType}-${selection}`,
-      eventId: event.id,
-      oddsId: oddsData.id,
-      matchup: `${event.away_team} @ ${event.home_team}`,
-      league: event.sport || event.competition,
-      selection: description,
-      price: oddsData.price,
-      marketType: betType,
-      eventTime: event.commence_time
-    };
-
-    addToBettingSlip(betItem);
+  const betItem = {
+    id: `${event.id || event.api_event_id}-${betType}-${selection}`,
+    eventId: event.id,
+    api_event_id: event.api_event_id || event.id, // Incluir API ID
+    oddsId: oddsData.id,
+    matchup: `${event.away_team} @ ${event.home_team}`,
+    league: event.sport || event.competition,
+    selection: description,
+    price: oddsData.price,
+    marketType: betType,
+    eventTime: event.commence_time
   };
+
+  addToBettingSlip(betItem);
+};
 
   const formatOdds = (price) => {
     const odds = parseFloat(price);
