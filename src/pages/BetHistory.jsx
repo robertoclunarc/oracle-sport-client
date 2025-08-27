@@ -199,7 +199,7 @@ const BetHistory = () => {
 
         {/* Statistics Cards */}
         <Grid container spacing={3} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Receipt sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
@@ -213,7 +213,7 @@ const BetHistory = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <TrendingUp sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
@@ -227,7 +227,7 @@ const BetHistory = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <TrendingDown sx={{ fontSize: 40, color: 'error.main', mb: 1 }} />
@@ -241,7 +241,7 @@ const BetHistory = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography 
@@ -264,7 +264,7 @@ const BetHistory = () => {
         {/* Filters */}
         <Paper sx={{ p: 3, mb: 3 }}>
           <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Estado</InputLabel>
                 <Select
@@ -385,7 +385,7 @@ const BetHistory = () => {
                                     <Card key={index} sx={{ mb: 2 }}>
                                       <CardContent>
                                         <Grid container spacing={2} alignItems="center">
-                                          <Grid item xs={12} md={6}>
+                                          <Grid size={{ xs: 12, md: 3 }}>
                                             <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
                                               {selection.home_team} vs {selection.away_team}
                                             </Typography>
@@ -394,7 +394,7 @@ const BetHistory = () => {
                                             </Typography>
                                           </Grid>
                                           
-                                          <Grid item xs={12} md={3}>
+                                          <Grid size={{ xs: 12, md: 3 }}>
                                             <Typography variant="body2">
                                               <strong>Selección:</strong>
                                             </Typography>
@@ -403,7 +403,7 @@ const BetHistory = () => {
                                             </Typography>
                                           </Grid>
                                           
-                                          <Grid item xs={12} md={2}>
+                                          <Grid size={{ xs: 12, md: 2 }}>
                                             <Typography variant="body2">
                                               <strong>Cuota:</strong>
                                             </Typography>
@@ -412,7 +412,7 @@ const BetHistory = () => {
                                             </Typography>
                                           </Grid>
                                           
-                                          <Grid item xs={12} md={1}>
+                                          <Grid size={{ xs: 12, md: 1 }}>
                                             <Chip
                                               label={getStatusText(selection.status)}
                                               color={getStatusColor(selection.status)}
@@ -433,7 +433,7 @@ const BetHistory = () => {
                                 <Divider sx={{ my: 2 }} />
                                 
                                 <Grid container spacing={2}>
-                                  <Grid item xs={6} sm={3}>
+                                  <Grid size={{ xs: 6, sm: 4 }}>
                                     <Typography variant="body2" color="text.secondary">
                                       Cuota Total:
                                     </Typography>
@@ -442,7 +442,7 @@ const BetHistory = () => {
                                     </Typography>
                                   </Grid>
                                   
-                                  <Grid item xs={6} sm={3}>
+                                  <Grid size={{ xs: 6, sm: 3 }}>
                                     <Typography variant="body2" color="text.secondary">
                                       Apuesta:
                                     </Typography>
@@ -451,7 +451,7 @@ const BetHistory = () => {
                                     </Typography>
                                   </Grid>
                                   
-                                  <Grid item xs={6} sm={3}>
+                                  <Grid size={{ xs: 6, sm: 3 }}>
                                     <Typography variant="body2" color="text.secondary">
                                       Ganancia Potencial:
                                     </Typography>
@@ -460,7 +460,7 @@ const BetHistory = () => {
                                     </Typography>
                                   </Grid>
                                   
-                                  <Grid item xs={6} sm={3}>
+                                  <Grid size={{ xs: 6, sm: 3 }}>
                                     <Typography variant="body2" color="text.secondary">
                                       Estado:
                                     </Typography>

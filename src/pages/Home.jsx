@@ -6,13 +6,13 @@ import {
   Typography,
   Grid,
   Card,
-  CardContent,
-  CardMedia,
+  //CardContent,
+  //CardMedia,
   CardActionArea,
   Button,
   Paper,
-  Divider,
-  Chip,
+  //Divider,
+  //Chip,
   useTheme,
   useMediaQuery
 } from '@mui/material';
@@ -104,7 +104,7 @@ const Home = () => {
           }}
         />
         <Grid container>
-          <Grid item xs={12} md={6} position="relative">
+          <Grid size={{ xs: 12, md: 6 }} position="relative">
             <Typography
               component="h1"
               variant="h3"
@@ -138,7 +138,7 @@ const Home = () => {
       </Typography>
       <Grid container spacing={3} mb={6}>
         {mainSports.map((sport) => (
-          <Grid item xs={6} sm={3} key={sport.key}>
+          <Grid size={{ xs: 6, sm: 3 }} key={sport.key}>
             <Card
               component={RouterLink}
               to={`/sports/${sport.key}`}
@@ -197,12 +197,12 @@ const Home = () => {
         <Grid container spacing={3}>
           {featuredEvents.length > 0 ? (
             featuredEvents.map((event) => (
-              <Grid item xs={12} sm={6} md={4} key={event.id}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={event.id}>
                 <EventCard event={event} />
               </Grid>
             ))
           ) : (
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Typography variant="body1" align="center">
                 No hay eventos disponibles en este momento.
               </Typography>
@@ -222,7 +222,7 @@ const Home = () => {
           baloncesto NBA y hockey NHL.
         </Typography>
         <Grid container spacing={4} mt={2}>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box textAlign="center">
               <Typography variant="h6" sx={{ mb: 1, fontWeight: 'bold' }}>
                 Depósitos Seguros
@@ -232,7 +232,7 @@ const Home = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box textAlign="center">
               <Typography variant="h6" sx={{ mb: 1, fontWeight: 'bold' }}>
                 Cuotas Competitivas
@@ -242,7 +242,7 @@ const Home = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box textAlign="center">
               <Typography variant="h6" sx={{ mb: 1, fontWeight: 'bold' }}>
                 Retiros Rápidos

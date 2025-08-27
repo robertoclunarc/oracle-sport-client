@@ -8,7 +8,7 @@ import {
   TextField,
   Button,
   Alert,
-  Divider,
+  //Divider,
   Card,
   CardContent,
   Avatar,
@@ -20,7 +20,7 @@ import {
   Select,
   MenuItem
 } from '@mui/material';
-import { Person, Edit, Save, Cancel } from '@mui/icons-material';
+import { /*Person,*/ Edit, Save, Cancel } from '@mui/icons-material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import AuthContext from '../contexts/AuthContext';
@@ -138,7 +138,7 @@ const Profile = () => {
                 {user?.first_name} {user?.last_name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Saldo: {user?.balance?.toFixed(2)} USDT
+                Saldo: {Number(user?.balance || 0).toFixed(2)} USDT
               </Typography>
             </Box>
           </Box>
@@ -179,7 +179,7 @@ const Profile = () => {
 
             <Box component="form" onSubmit={profileFormik.handleSubmit}>
               <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label="Nombre"
@@ -192,7 +192,7 @@ const Profile = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label="Apellido"
@@ -205,7 +205,7 @@ const Profile = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <TextField
                     fullWidth
                     label="Nombre de Usuario"
@@ -215,7 +215,7 @@ const Profile = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <TextField
                     fullWidth
                     label="Email"
@@ -229,7 +229,7 @@ const Profile = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label="Teléfono"
@@ -242,7 +242,7 @@ const Profile = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <FormControl fullWidth disabled={!editMode}>
                     <InputLabel>País</InputLabel>
                     <Select
@@ -261,7 +261,7 @@ const Profile = () => {
                   </FormControl>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <TextField
                     fullWidth
                     label="Número de Identificación"
@@ -317,7 +317,7 @@ const Profile = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <TextField
                     fullWidth
                     label="Nueva Contraseña"
@@ -330,7 +330,7 @@ const Profile = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <TextField
                     fullWidth
                     label="Confirmar Nueva Contraseña"
@@ -363,11 +363,11 @@ const Profile = () => {
             </Typography>
 
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card>
                   <CardContent sx={{ textAlign: 'center' }}>
                     <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                      {user?.balance?.toFixed(2)}
+                      {Number(user?.balance || 0).toFixed(2)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Saldo Actual (USDT)
@@ -376,7 +376,7 @@ const Profile = () => {
                 </Card>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card>
                   <CardContent sx={{ textAlign: 'center' }}>
                     <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'success.main' }}>
@@ -389,7 +389,7 @@ const Profile = () => {
                 </Card>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card>
                   <CardContent sx={{ textAlign: 'center' }}>
                     <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'error.main' }}>
@@ -402,7 +402,7 @@ const Profile = () => {
                 </Card>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card>
                   <CardContent sx={{ textAlign: 'center' }}>
                     <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'info.main' }}>

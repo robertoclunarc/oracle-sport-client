@@ -16,7 +16,7 @@ import {
   TableRow,
   Chip,
   Alert,
-  LinearProgress,
+  //LinearProgress,
   List,
   ListItem,
   ListItemText,
@@ -24,16 +24,16 @@ import {
   Divider
 } from '@mui/material';
 import {
-  Dashboard,
+  //Dashboard,
   People,
   Receipt,
   AttachMoney,
   TrendingUp,
   TrendingDown,
   Pending,
-  CheckCircle,
-  Cancel,
-  Warning,
+  //CheckCircle,
+  //Cancel,
+  //Warning,
   Refresh,
   Sports
 } from '@mui/icons-material';
@@ -220,7 +220,7 @@ const AdminDashboard = () => {
 
         {/* Statistics Cards */}
         <Grid container spacing={3} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <People sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
@@ -242,7 +242,7 @@ const AdminDashboard = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Receipt sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
@@ -264,7 +264,7 @@ const AdminDashboard = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <TrendingUp sx={{ fontSize: 40, color: 'info.main', mb: 1 }} />
@@ -286,7 +286,7 @@ const AdminDashboard = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <TrendingDown sx={{ fontSize: 40, color: 'warning.main', mb: 1 }} />
@@ -311,7 +311,7 @@ const AdminDashboard = () => {
 
         <Grid container spacing={3}>
           {/* Recent Bets */}
-          <Grid item xs={12} md={8}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <Paper sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
@@ -372,7 +372,7 @@ const AdminDashboard = () => {
           </Grid>
 
           {/* Pending Actions */}
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Paper sx={{ p: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
                 Acciones Pendientes
@@ -431,7 +431,7 @@ const AdminDashboard = () => {
               </Typography>
 
               <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Button
                     fullWidth
                     variant="outlined"
@@ -443,7 +443,7 @@ const AdminDashboard = () => {
                   </Button>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Button
                     fullWidth
                     variant="outlined"
@@ -455,7 +455,7 @@ const AdminDashboard = () => {
                   </Button>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Button
                     fullWidth
                     variant="outlined"
@@ -467,7 +467,7 @@ const AdminDashboard = () => {
                   </Button>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Button
                     fullWidth
                     variant="outlined"

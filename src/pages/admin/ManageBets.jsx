@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Paper,
@@ -28,7 +28,7 @@ import {
   Alert,
   IconButton,
   Collapse,
-  Divider
+  //Divider
 } from '@mui/material';
 import {
   Search,
@@ -36,12 +36,12 @@ import {
   ExpandLess,
   Receipt,
   TrendingUp,
-  TrendingDown,
+  //TrendingDown,
   Pending,
   CheckCircle,
   Cancel,
   Visibility,
-  Edit
+  //Edit
 } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -249,7 +249,7 @@ const ManageBets = () => {
 
           {/* Statistics Cards */}
           <Grid container spacing={3} sx={{ mb: 3 }}>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }} >
               <Card>
                 <CardContent sx={{ textAlign: 'center' }}>
                   <Receipt sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
@@ -263,7 +263,7 @@ const ManageBets = () => {
               </Card>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Card>
                 <CardContent sx={{ textAlign: 'center' }}>
                   <Pending sx={{ fontSize: 40, color: 'warning.main', mb: 1 }} />
@@ -277,7 +277,7 @@ const ManageBets = () => {
               </Card>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Card>
                 <CardContent sx={{ textAlign: 'center' }}>
                   <TrendingUp sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
@@ -291,7 +291,7 @@ const ManageBets = () => {
               </Card>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Card>
                 <CardContent sx={{ textAlign: 'center' }}>
                   <Typography 
@@ -314,7 +314,7 @@ const ManageBets = () => {
           {/* Filters */}
           <Paper sx={{ p: 3, mb: 3 }}>
             <Grid container spacing={2} alignItems="center">
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <TextField
                   fullWidth
                   label="Buscar por usuario"
@@ -326,7 +326,7 @@ const ManageBets = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6} md={2}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <FormControl fullWidth>
                   <InputLabel>Estado</InputLabel>
                   <Select
@@ -343,7 +343,7 @@ const ManageBets = () => {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={2}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <DatePicker
                   label="Fecha desde"
                   value={dateFrom}
@@ -352,7 +352,7 @@ const ManageBets = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6} md={2}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <DatePicker
                   label="Fecha hasta"
                   value={dateTo}
@@ -361,7 +361,7 @@ const ManageBets = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={3}>
+              <Grid size={{ xs: 12, md: 3 }}>
                 <Box sx={{ display: 'flex', gap: 1 }}>
                   <Button
                     variant="outlined"
@@ -482,7 +482,7 @@ const ManageBets = () => {
                                   <Card key={index} sx={{ mb: 2 }}>
                                     <CardContent>
                                       <Grid container spacing={2} alignItems="center">
-                                        <Grid item xs={12} md={4}>
+                                        <Grid size={{ xs: 12, md: 4 }}>
                                           <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
                                             {selection.home_team} vs {selection.away_team}
                                           </Typography>
@@ -490,20 +490,20 @@ const ManageBets = () => {
                                             {format(new Date(selection.commence_time), 'dd/MM/yyyy HH:mm', { locale: es })}
                                           </Typography>
                                         </Grid>
-                                        
-                                        <Grid item xs={12} md={3}>
+
+                                        <Grid size={{ xs: 12, md: 3 }}>
                                           <Typography variant="body2">
                                             <strong>Selección:</strong> {selection.selection}
                                           </Typography>
                                         </Grid>
-                                        
-                                        <Grid item xs={12} md={2}>
+
+                                        <Grid size={{ xs: 12, md: 2 }}>
                                           <Typography variant="body2">
                                             <strong>Cuota:</strong> {formatOdds(selection.odds_value)}
                                           </Typography>
                                         </Grid>
-                                        
-                                        <Grid item xs={12} md={2}>
+
+                                        <Grid size={{ xs: 12, md: 2 }}>
                                           <Chip
                                             label={getStatusText(selection.status)}
                                             color={getStatusColor(selection.status)}
@@ -511,8 +511,8 @@ const ManageBets = () => {
                                             variant="outlined"
                                           />
                                         </Grid>
-                                        
-                                        <Grid item xs={12} md={1}>
+
+                                        <Grid size={{ xs: 12, md: 1 }}>
                                           {bet.status === 'pending' && (
                                             <Box sx={{ display: 'flex', gap: 0.5 }}>
                                               <Button
@@ -575,40 +575,40 @@ const ManageBets = () => {
           <DialogContent>
             {selectedBet && (
               <Grid container spacing={2} sx={{ mt: 1 }}>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <Typography variant="body2" color="text.secondary">Usuario</Typography>
                   <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{selectedBet.username}</Typography>
                 </Grid>
-                
-                <Grid item xs={12} sm={6}>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <Typography variant="body2" color="text.secondary">Fecha</Typography>
                   <Typography variant="body1">
                     {format(new Date(selectedBet.created_at), 'dd/MM/yyyy HH:mm', { locale: es })}
                   </Typography>
                 </Grid>
-                
-                <Grid item xs={12} sm={6}>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <Typography variant="body2" color="text.secondary">Cuota Total</Typography>
                   <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
                     {formatOdds(selectedBet.total_odds)}
                   </Typography>
                 </Grid>
-                
-                <Grid item xs={12} sm={6}>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <Typography variant="body2" color="text.secondary">Monto Apostado</Typography>
                   <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
                     {formatCurrency(selectedBet.stake_amount)} USDT
                   </Typography>
                 </Grid>
-                
-                <Grid item xs={12} sm={6}>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <Typography variant="body2" color="text.secondary">Ganancia Potencial</Typography>
                   <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'success.main' }}>
                     {formatCurrency(selectedBet.potential_payout)} USDT
                   </Typography>
                 </Grid>
-                
-                <Grid item xs={12} sm={6}>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <Typography variant="body2" color="text.secondary">Estado</Typography>
                   <Chip
                     icon={getStatusIcon(selectedBet.status)}

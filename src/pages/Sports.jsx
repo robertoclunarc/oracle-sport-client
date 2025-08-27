@@ -9,7 +9,7 @@ import {
   Tab,
   Paper,
   Divider,
-  Chip,
+  //Chip,
   TextField,
   MenuItem,
   FormControl,
@@ -125,7 +125,7 @@ const Sports = () => {
     <Container maxWidth="xl">
       <Grid container spacing={3}>
         {/* Contenido principal */}
-        <Grid item xs={12} md={9}>
+        <Grid size={{ xs: 12, md: 9 }}>
           <Paper sx={{ p: 2, mb: 3 }}>
             <Typography variant="h4" component="h1" gutterBottom>
               Eventos Deportivos
@@ -188,7 +188,7 @@ const Sports = () => {
             ) : (
               <Grid container spacing={3}>
                 {filteredEvents.map((event) => (
-                  <Grid item xs={12} sm={6} lg={4} key={event.id}>
+                  <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={event.id}>
                     <EventCard event={event} />
                   </Grid>
                 ))}
@@ -198,7 +198,7 @@ const Sports = () => {
         </Grid>
         
         {/* Panel de apuestas */}
-        <Grid item xs={12} md={3}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <Paper sx={{ p: 2, position: 'sticky', top: '100px' }}>
             <Typography variant="h6" gutterBottom>
               Boleto de Apuestas ({bettingSlip.length})

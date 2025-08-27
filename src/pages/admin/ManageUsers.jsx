@@ -41,7 +41,7 @@ import {
   MoreVert,
   Person,
   AdminPanelSettings,
-  Block,
+  //Block,
   CheckCircle,
   AttachMoney,
   Visibility
@@ -250,7 +250,7 @@ const ManageUsers = () => {
 
         {/* Statistics Cards */}
         <Grid container spacing={3} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Person sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
@@ -264,7 +264,7 @@ const ManageUsers = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <AdminPanelSettings sx={{ fontSize: 40, color: 'error.main', mb: 1 }} />
@@ -278,7 +278,7 @@ const ManageUsers = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <CheckCircle sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
@@ -292,7 +292,7 @@ const ManageUsers = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <AttachMoney sx={{ fontSize: 40, color: 'info.main', mb: 1 }} />
@@ -310,7 +310,7 @@ const ManageUsers = () => {
         {/* Filters */}
         <Paper sx={{ p: 3, mb: 3 }}>
           <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 label="Buscar usuario"
@@ -322,7 +322,7 @@ const ManageUsers = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Filtrar por rol</InputLabel>
                 <Select
@@ -337,7 +337,7 @@ const ManageUsers = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={12} md={5}>
+            <Grid size={{ xs: 12, sm: 12, md: 5 }}>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                 <Button
                   variant="outlined"
@@ -485,44 +485,44 @@ const ManageUsers = () => {
         <DialogContent>
           {selectedUser && (
             <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">Nombre de Usuario</Typography>
                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{selectedUser.username}</Typography>
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">Email</Typography>
                 <Typography variant="body1">{selectedUser.email}</Typography>
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">Nombre Completo</Typography>
                 <Typography variant="body1">{selectedUser.first_name} {selectedUser.last_name}</Typography>
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">Teléfono</Typography>
                 <Typography variant="body1">{selectedUser.phone}</Typography>
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">País</Typography>
                 <Typography variant="body1">{selectedUser.country}</Typography>
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">Identificación</Typography>
                 <Typography variant="body1">{selectedUser.identification_number}</Typography>
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">Saldo</Typography>
                 <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'success.main' }}>
                   {formatCurrency(selectedUser.balance)} USDT
                 </Typography>
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">Rol</Typography>
                 <Chip
                   icon={getRoleIcon(selectedUser.role)}
@@ -532,15 +532,15 @@ const ManageUsers = () => {
                   size="small"
                 />
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">Fecha de Registro</Typography>
                 <Typography variant="body1">
                   {format(new Date(selectedUser.created_at), 'dd/MM/yyyy HH:mm', { locale: es })}
                 </Typography>
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" color="text.secondary">Última Actualización</Typography>
                 <Typography variant="body1">
                   {format(new Date(selectedUser.updated_at), 'dd/MM/yyyy HH:mm', { locale: es })}
@@ -564,7 +564,7 @@ const ManageUsers = () => {
         <DialogContent>
           <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 2 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Nombre"
@@ -575,8 +575,8 @@ const ManageUsers = () => {
                   helperText={formik.touched.first_name && formik.errors.first_name}
                 />
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Apellido"
@@ -587,8 +587,8 @@ const ManageUsers = () => {
                   helperText={formik.touched.last_name && formik.errors.last_name}
                 />
               </Grid>
-              
-              <Grid item xs={12}>
+
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
                   label="Email"
@@ -600,8 +600,8 @@ const ManageUsers = () => {
                   helperText={formik.touched.email && formik.errors.email}
                 />
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Teléfono"
@@ -612,8 +612,8 @@ const ManageUsers = () => {
                   helperText={formik.touched.phone && formik.errors.phone}
                 />
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="País"
@@ -624,8 +624,8 @@ const ManageUsers = () => {
                   helperText={formik.touched.country && formik.errors.country}
                 />
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <FormControl fullWidth>
                   <InputLabel>Rol</InputLabel>
                   <Select
@@ -640,8 +640,8 @@ const ManageUsers = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              
-              <Grid item xs={12} sm={6}>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Saldo (USDT)"

@@ -25,7 +25,7 @@ import {
   DialogActions
 } from '@mui/material';
 import {
-  AccountBalance,
+  //AccountBalance,
   CurrencyBitcoin,
   Phone,
   Add,
@@ -283,7 +283,7 @@ const Withdraw = () => {
               </Typography>
               <Grid container spacing={3}>
                 {withdrawMethods.map((method) => (
-                  <Grid item xs={12} md={6} key={method.id}>
+                  <Grid size={{ xs: 12, md: 6 }} key={method.id}>
                     <Card 
                       sx={{ 
                         cursor: user?.balance >= method.minAmount ? 'pointer' : 'not-allowed',
@@ -345,7 +345,7 @@ const Withdraw = () => {
               </Typography>
               
               <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label="Monto a retirar"
@@ -361,7 +361,7 @@ const Withdraw = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   {/* Calculation Display */}
                   <Paper sx={{ p: 2, backgroundColor: 'grey.50' }}>
                     <Typography variant="body2" color="text.secondary">
@@ -386,7 +386,7 @@ const Withdraw = () => {
                 </Grid>
 
                 {/* Destination Selection */}
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   {selectedMethod.id === 'mobile_payment' ? (
                     <Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -489,7 +489,7 @@ const Withdraw = () => {
               
               <Paper sx={{ p: 3, mb: 3, backgroundColor: 'grey.50' }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                  <Grid size={{ xs: 6 }}>
                     <Typography variant="body2" color="text.secondary">
                       Método:
                     </Typography>
@@ -498,7 +498,7 @@ const Withdraw = () => {
                     </Typography>
                   </Grid>
                   
-                  <Grid item xs={6}>
+                  <Grid size={{ xs: 6 }}>
                     <Typography variant="body2" color="text.secondary">
                       Monto solicitado:
                     </Typography>
@@ -507,7 +507,7 @@ const Withdraw = () => {
                     </Typography>
                   </Grid>
                   
-                  <Grid item xs={6}>
+                  <Grid size={{ xs: 6 }}>
                     <Typography variant="body2" color="text.secondary">
                       Comisión:
                     </Typography>
@@ -516,7 +516,7 @@ const Withdraw = () => {
                     </Typography>
                   </Grid>
                   
-                  <Grid item xs={6}>
+                  <Grid size={{ xs: 6 }}>
                     <Typography variant="body2" color="text.secondary">
                       Recibirás:
                     </Typography>

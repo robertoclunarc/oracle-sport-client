@@ -7,24 +7,24 @@ import {
   Grid,
   TextField,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  //FormControl,
+  //InputLabel,
+  //Select,
+  //MenuItem,
   Card,
   CardContent,
   Alert,
   Stepper,
   Step,
   StepLabel,
-  Divider,
+  //Divider,
   Chip
 } from '@mui/material';
 import {
   AccountBalance,
   CurrencyBitcoin,
   Phone,
-  Upload,
+  //Upload,
   CheckCircle
 } from '@mui/icons-material';
 import { useFormik } from 'formik';
@@ -234,7 +234,7 @@ const Deposit = () => {
                 </Typography>
                 <Grid container spacing={3}>
                   {depositMethods.map((method) => (
-                    <Grid item xs={12} md={4} key={method.id}>
+                    <Grid size={{ xs: 12, md: 4 }} key={method.id}>
                       <Card 
                         sx={{ 
                           cursor: 'pointer',
@@ -282,7 +282,7 @@ const Deposit = () => {
                 </Typography>
                 
                 <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField
                       fullWidth
                       label="Monto a depositar"
@@ -298,7 +298,7 @@ const Deposit = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <DatePicker
                       label="Fecha del depósito"
                       value={formik.values.deposit_date}
@@ -317,7 +317,7 @@ const Deposit = () => {
                   </Grid>
 
                   {selectedMethod.id === 'binance' ? (
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                       <TextField
                         fullWidth
                         label="Hash de Transacción"
@@ -330,7 +330,7 @@ const Deposit = () => {
                       />
                     </Grid>
                   ) : (
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                       <TextField
                         fullWidth
                         label="Número de Referencia"
@@ -413,7 +413,7 @@ const Deposit = () => {
                 
                 <Paper sx={{ p: 3, mb: 3, backgroundColor: 'grey.50' }}>
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid size={{ xs: 6 }}>
                       <Typography variant="body2" color="text.secondary">
                         Método:
                       </Typography>
@@ -422,7 +422,7 @@ const Deposit = () => {
                       </Typography>
                     </Grid>
                     
-                    <Grid item xs={6}>
+                    <Grid size={{ xs: 6 }}>
                       <Typography variant="body2" color="text.secondary">
                         Monto:
                       </Typography>
@@ -431,7 +431,7 @@ const Deposit = () => {
                       </Typography>
                     </Grid>
                     
-                    <Grid item xs={6}>
+                    <Grid size={{ xs: 6 }}>
                       <Typography variant="body2" color="text.secondary">
                         Fecha:
                       </Typography>
@@ -439,8 +439,8 @@ const Deposit = () => {
                         {formik.values.deposit_date?.toLocaleDateString()}
                       </Typography>
                     </Grid>
-                    
-                    <Grid item xs={6}>
+
+                    <Grid size={{ xs: 6 }}>
                       <Typography variant="body2" color="text.secondary">
                         Referencia:
                       </Typography>

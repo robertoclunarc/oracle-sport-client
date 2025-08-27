@@ -36,7 +36,7 @@ const Footer = () => {
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           {/* Company Info */}
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Typography variant="h6" color="primary" gutterBottom sx={{ fontWeight: 'bold' }}>
               ORACLE SPORT
             </Typography>
@@ -62,7 +62,7 @@ const Footer = () => {
           </Grid>
 
           {/* Quick Links */}
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Typography variant="h6" color="text.primary" gutterBottom>
               Enlaces Rápidos
             </Typography>
@@ -83,7 +83,7 @@ const Footer = () => {
           </Grid>
 
           {/* Sports */}
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Typography variant="h6" color="text.primary" gutterBottom>
               Deportes
             </Typography>
@@ -107,7 +107,7 @@ const Footer = () => {
           </Grid>
 
           {/* Legal */}
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Typography variant="h6" color="text.primary" gutterBottom>
               Legal
             </Typography>
@@ -128,7 +128,7 @@ const Footer = () => {
           </Grid>
 
           {/* Contact Info */}
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Typography variant="h6" color="text.primary" gutterBottom>
               Contacto
             </Typography>

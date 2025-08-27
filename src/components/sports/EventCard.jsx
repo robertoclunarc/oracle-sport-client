@@ -141,7 +141,7 @@ const EventCard = ({ event }) => {
             </Typography>
             <Grid container spacing={1}>
               {organizedOdds.h2h.away && (
-                <Grid item xs={organizedOdds.h2h.draw ? 4 : 6}>
+                <Grid size={{ xs: organizedOdds.h2h.draw ? 4 : 6 }}>
                   <Button
                     variant="outlined"
                     fullWidth
@@ -207,7 +207,7 @@ const EventCard = ({ event }) => {
               )}
 
               {organizedOdds.h2h.home && (
-                <Grid item xs={organizedOdds.h2h.draw ? 4 : 6}>
+                <Grid size={{ xs: organizedOdds.h2h.draw ? 4 : 6 }}>
                   <Button
                     variant="outlined"
                     fullWidth
