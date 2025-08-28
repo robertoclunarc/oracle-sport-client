@@ -174,7 +174,7 @@ const EventCard = ({ event }) => {
               )}
               
               {organizedOdds.h2h.draw && (
-                <Grid item xs={4}>
+                <Grid size={{ xs: 4 }}>
                   <Button
                     variant="outlined"
                     fullWidth
