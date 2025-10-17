@@ -8,12 +8,12 @@ import {
   Paper,
   Chip,
   useTheme,
-  Container,
   Alert
 } from '@mui/material';
 import { getSports, getEvents } from '../api/sports';
 import EventsTable from '../components/sports/EventsTable';
 import BettingSlipPanel from '../components/betting/BettingSlipPanel';
+import PopularParlayBets from '../components/sports/PopularParlayBets';
 import BettingContext from '../contexts/BettingContext';
 import AuthContext from '../contexts/AuthContext';
 import Loading from '../components/common/Loading';
@@ -124,22 +124,32 @@ const Sports = () => {
     }));
   };
   
-  // Formatear nombre del deporte para mostrar
+  // Formatear nombre del deporte para mostrar en tabs
   const formatSportDisplayName = (sportName) => {
     const displayNameMap = {
       'MLB': 'MLB',
       'NBA': 'NBA', 
       'NFL': 'NFL',
       'NHL': 'NHL',
-      'Premier League': 'PL',
+      'Premier League': 'EPL',
       'La Liga': 'La Liga',
       'Serie A': 'Serie A',
       'Bundesliga': 'Bundesliga',
       'Ligue 1': 'Ligue 1',
       'Champions League': 'UCL',
-      'Tennis': 'WIMBLEDON',
-      'Golf': 'PGA',
-      'Cricket': 'ICC'
+      'Tennis': 'Tennis',
+      'Wimbledon': 'Wimbledon',
+      'Golf': 'Golf',
+      'PGA': 'PGA',
+      'Cricket': 'Cricket',
+      'ICC': 'ICC',
+      'UFC': 'UFC',
+      'MMA': 'MMA',
+      'Boxing': 'Boxing',
+      'F1': 'F1',
+      'Formula 1': 'F1',
+      'Rugby': 'Rugby',
+      'NRL': 'NRL'
     };
     
     return displayNameMap[sportName] || sportName;
@@ -153,17 +163,26 @@ const Sports = () => {
       'nfl': 'NFL', 
       'nhl': 'NHL',
       'premier-league': 'Premier League',
+      'epl': 'Premier League',
       'la-liga': 'La Liga',
       'serie-a': 'Serie A',
       'bundesliga': 'Bundesliga',
       'ligue-1': 'Ligue 1',
       'champions-league': 'Champions League',
+      'ucl': 'Champions League',
       'wimbledon': 'Tennis',
       'tennis': 'Tennis',
       'pga': 'Golf',
       'golf': 'Golf',
       'icc': 'Cricket',
-      'cricket': 'Cricket'
+      'cricket': 'Cricket',
+      'ufc': 'UFC',
+      'mma': 'MMA',
+      'boxing': 'Boxing',
+      'f1': 'F1',
+      'formula-1': 'Formula 1',
+      'rugby': 'Rugby',
+      'nrl': 'NRL'
     };
     
     return slugMap[sportKey] || sportKey;
@@ -230,68 +249,11 @@ const Sports = () => {
           </Alert>
         )}
 
-        {/* Sección destacada - Popular Same Game Parlay Bets */}
-        {selectedSport === 'NFL' && (
-          <Paper sx={{ p: 3, mb: 3, backgroundColor: '#f8f9fa', borderRadius: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-              <Box 
-                sx={{ 
-                  backgroundColor: '#22c55e', 
-                  color: 'white', 
-                  px: 1, 
-                  py: 0.5, 
-                  borderRadius: 1,
-                  fontSize: '0.75rem',
-                  fontWeight: 'bold'
-                }}
-              >
-                $
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                Popular Same Game Parlay Bets
-              </Typography>
-            </Box>
-            
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 2,
-              p: 2,
-              backgroundColor: 'white',
-              borderRadius: 1,
-              border: '1px solid #e5e7eb'
-            }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Box sx={{ 
-                  backgroundColor: '#f59e0b', 
-                  color: 'white', 
-                  px: 1.5, 
-                  py: 0.5, 
-                  borderRadius: 1,
-                  fontSize: '0.75rem',
-                  fontWeight: 'bold'
-                }}>
-                  🔥 11844 PEOPLE PLACED
-                </Box>
-                <Typography variant="body2" color="text.secondary">
-                  4 Selections
-                </Typography>
-              </Box>
-              
-              <Box sx={{ flexGrow: 1 }} />
-              
-              <Chip 
-                label="+1149"
-                sx={{ 
-                  backgroundColor: '#22c55e',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: '1rem'
-                }}
-              />
-            </Box>
-          </Paper>
-        )}
+        {/* Popular Same Game Parlay Bets - dinámico basado en eventos reales */}
+        <PopularParlayBets 
+          events={events}
+          selectedSport={selectedSport}
+        />
 
         {error && (
           <Alert severity="error" sx={{ mb: 3 }}>

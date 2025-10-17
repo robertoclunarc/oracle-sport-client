@@ -18,6 +18,7 @@ export const getBetById = async (betId) => {
 // Crear nueva apuesta
 export const createTicket = async (betData) => {
   try {
+    console.log('Creating ticket with data:', betData);
     const response = await api.post('/tickets', betData);
     return response.data;
   } catch (error) {

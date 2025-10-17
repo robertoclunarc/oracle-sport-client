@@ -15,6 +15,7 @@ import Sports from './pages/Sports';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import NotFound from './pages/NotFound';
+import AdminDashboard from './pages/admin/AdminDashboard'; // Importar el componente real
 
 // Simple placeholder components for missing pages
 const Home = () => (
@@ -48,17 +49,21 @@ const Withdraw = () => (
   </Box>
 );
 
-const AdminDashboard = () => (
-  <Box sx={{ p: 3 }}>
-    <h1>Admin Dashboard</h1>
-  </Box>
-);
-
 // Layout Wrapper para rutas que necesitan layout
 const LayoutWrapper = ({ children }) => (
   <Layout>
     {children}
   </Layout>
+);
+
+// Layout especial para admin (sin sidebar de deportes ni betting panel)
+const AdminLayoutWrapper = ({ children }) => (
+  <Box sx={{ 
+    minHeight: '100vh',
+    backgroundColor: (theme) => theme.palette.background.default 
+  }}>
+    {children}
+  </Box>
 );
 
 function App() {
@@ -119,20 +124,23 @@ function App() {
               <Withdraw />
             </ProtectedRoute>
           </LayoutWrapper>
-        } />
-        
-        {/* Rutas de admin */}
+        } />        
+
         <Route path="/admin" element={
           <AdminRoute>
-            <AdminDashboard />
-          </AdminRoute>
+            <LayoutWrapper>
+              <AdminDashboard />
+            </LayoutWrapper>
+          </AdminRoute>  
         } />
         
         <Route path="/admin/*" element={
           <AdminRoute>
-            <AdminDashboard />
-          </AdminRoute>
-        } />
+            <LayoutWrapper>
+              <AdminDashboard />
+            </LayoutWrapper>
+          </AdminRoute>  
+        } />        
         
         {/* 404 */}
         <Route path="*" element={

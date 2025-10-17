@@ -9,9 +9,9 @@ const Layout = ({ children }) => {
   const theme = useTheme();
   const location = useLocation();
   
-  // Páginas de admin no necesitan sidebar ni el panel de apuestas
-  const isAdminPage = location.pathname.startsWith('/admin');
-  const showSidebar = !isAdminPage;
+  // Las páginas de admin no usan este layout, se manejan por separado
+  const showSidebar = true; // Siempre mostrar sidebar para rutas no-admin
+  const showBettingPanel = true; // Siempre mostrar betting panel para rutas no-admin
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -25,7 +25,7 @@ const Layout = ({ children }) => {
           sx={{
             flexGrow: 1,
             ml: showSidebar ? '200px' : 0,
-            mr: isAdminPage ? 0 : '390px', // Espacio para el betting panel
+            mr: showBettingPanel ? '390px' : 0, // Espacio para el betting panel
             backgroundColor: theme.palette.background.default,
             minHeight: 'calc(100vh - 64px)',
             p: 0,

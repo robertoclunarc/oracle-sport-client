@@ -9,6 +9,7 @@ import {
   ListItemText,
   Typography,
   Divider,
+  Collapse,
   useTheme
 } from '@mui/material';
 import {
@@ -22,71 +23,109 @@ import {
   SportsGolf,
   SportsEsports,
   SportsMotorsports,
-  SportsRugby
+  SportsRugby,
+  ExpandLess,
+  ExpandMore
 } from '@mui/icons-material';
-import { getSports } from '../../api/sports';
+import { getSports, getEvents } from '../../api/sports';
 
 const SportsSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-  const [sports, setSports] = useState([]);
+  const [availableSports, setAvailableSports] = useState([]);
+  const [expandedCategories, setExpandedCategories] = useState(['Soccer']); // Soccer expandido por defecto
   
-  // Mapeo de deportes a iconos
-  const sportIcons = {
-    'NBA': SportsBasketball,
-    'NFL': SportsFootball,
-    'MLB': SportsBaseball,
-    'NHL': SportsHockey,
-    'Premier League': SportsSoccer,
-    'La Liga': SportsSoccer,
-    'Serie A': SportsSoccer,
-    'Bundesliga': SportsSoccer,
-    'Ligue 1': SportsSoccer,
-    'Champions League': SportsSoccer,
-    'Wimbledon': SportsTennis,
-    'Tennis': SportsTennis,
-    'PGA': SportsGolf,
-    'Golf': SportsGolf,
-    'UFC': SportsEsports,
-    'MMA': SportsEsports,
-    'F1': SportsMotorsports,
-    'Formula 1': SportsMotorsports,
-    'NRL': SportsRugby,
-    'Rugby': SportsRugby
+  // Mapeo de deportes individuales a categorías principales
+  const sportCategories = {
+    'American Football': {
+      icon: SportsFootball,
+      sports: ['NFL']
+    },
+    'Basketball': {
+      icon: SportsBasketball,
+      sports: ['NBA']
+    },
+    'Baseball': {
+      icon: SportsBaseball,
+      sports: ['MLB']
+    },
+    'Ice Hockey': {
+      icon: SportsHockey,
+      sports: ['NHL']
+    },
+    'Soccer': {
+      icon: SportsSoccer,
+      sports: ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Champions League']
+    },
+    'Tennis': {
+      icon: SportsTennis,
+      sports: ['Tennis', 'Wimbledon']
+    },
+    'Golf': {
+      icon: SportsGolf,
+      sports: ['Golf', 'PGA']
+    },
+    'Combat Sports': {
+      icon: SportsEsports,
+      sports: ['UFC', 'MMA', 'Boxing']
+    },
+    'Motorsports': {
+      icon: SportsMotorsports,
+      sports: ['F1', 'Formula 1']
+    },
+    'Rugby': {
+      icon: SportsRugby,
+      sports: ['NRL', 'Rugby']
+    }
   };
 
-  // Deportes predefinidos (en caso de que la API no esté disponible)
-  const defaultSports = [
-    { name: 'NBA', displayName: 'NBA' },
-    { name: 'NFL', displayName: 'NFL' },
-    { name: 'MLB', displayName: 'MLB' },
-    { name: 'Premier League', displayName: 'PL' },
-    { name: 'NHL', displayName: 'NHL' },
-    { name: 'Tennis', displayName: 'Tennis' },
-    { name: 'Golf', displayName: 'PGA' },
-    { name: 'UFC', displayName: 'UFC' },
-    { name: 'F1', displayName: 'F1' },
-    { name: 'Rugby', displayName: 'NRL' }
-  ];
+  // Obtener nombres cortos para el sidebar
+  const getShortName = (sportName) => {
+    const shortNames = {
+      'Premier League': 'EPL',
+      'La Liga': 'La Liga',
+      'Serie A': 'Serie A',
+      'Bundesliga': 'Bundesliga',
+      'Ligue 1': 'Ligue 1',
+      'Champions League': 'UCL',
+      'NBA': 'NBA',
+      'NFL': 'NFL',
+      'MLB': 'MLB',
+      'NHL': 'NHL',
+      'Tennis': 'Tennis',
+      'Golf': 'PGA',
+      'UFC': 'UFC',
+      'F1': 'F1'
+    };
+    
+    return shortNames[sportName] || sportName;
+  };
 
   useEffect(() => {
-    const fetchSports = async () => {
+    const fetchAvailableSports = async () => {
       try {
-        const sportsData = await getSports();
-        if (sportsData && sportsData.length > 0) {
-          setSports(sportsData);
-        } else {
-          setSports(defaultSports);
-        }
+        // Obtener eventos para saber qué deportes tienen datos
+        const events = await getEvents();
+        const uniqueSports = [...new Set(events.map(event => event.sport).filter(Boolean))];
+        setAvailableSports(uniqueSports);
       } catch (error) {
         console.warn('Error loading sports, using defaults:', error);
-        setSports(defaultSports);
+        // Deportes por defecto si no hay conexión al API
+        setAvailableSports(['NBA', 'NFL', 'MLB', 'NHL', 'Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Champions League', 'Tennis', 'Golf', 'UFC', 'F1']);
       }
     };
 
-    fetchSports();
+    fetchAvailableSports();
   }, []);
+
+  const handleCategoryToggle = (category) => {
+    setExpandedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
 
   const handleSportClick = (sportName) => {
     const sportSlug = sportName.toLowerCase().replace(/\s+/g, '-');
@@ -98,10 +137,21 @@ const SportsSidebar = () => {
     return location.pathname === `/sports/${sportSlug}`;
   };
 
-  const getIcon = (sportName) => {
-    const IconComponent = sportIcons[sportName] || Sports;
-    return <IconComponent />;
-  };
+  // Organizar deportes disponibles por categorías
+  const organizedSports = {};
+  
+  Object.entries(sportCategories).forEach(([category, categoryData]) => {
+    const sportsInCategory = categoryData.sports.filter(sport => 
+      availableSports.includes(sport)
+    );
+    
+    if (sportsInCategory.length > 0) {
+      organizedSports[category] = {
+        ...categoryData,
+        sports: sportsInCategory
+      };
+    }
+  });
 
   return (
     <Box
@@ -136,37 +186,73 @@ const SportsSidebar = () => {
       <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)' }} />
       
       <List sx={{ p: 0 }}>
-        {sports.map((sport) => {
-          const sportName = sport.name || sport;
-          const displayName = sport.displayName || sport.name || sport;
-          const selected = isSelected(sportName);
+        {Object.entries(organizedSports).map(([category, categoryData]) => {
+          const isExpanded = expandedCategories.includes(category);
+          const Icon = categoryData.icon;
           
           return (
-            <ListItem key={sportName} disablePadding>
-              <ListItemButton
-                onClick={() => handleSportClick(sportName)}
-                sx={{
-                  py: 1.5,
-                  px: 2,
-                  backgroundColor: selected ? 'rgba(255,255,255,0.1)' : 'transparent',
-                  borderRight: selected ? `3px solid ${theme.palette.secondary.main}` : 'none',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.08)'
-                  }
-                }}
-              >
-                <ListItemIcon sx={{ color: 'white', minWidth: 36 }}>
-                  {getIcon(sportName)}
-                </ListItemIcon>
-                <ListItemText 
-                  primary={displayName}
-                  primaryTypographyProps={{
-                    fontSize: '0.875rem',
-                    fontWeight: selected ? 600 : 400
+            <Box key={category}>
+              {/* Categoría Principal */}
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => handleCategoryToggle(category)}
+                  sx={{
+                    py: 1.5,
+                    px: 2,
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.08)'
+                    }
                   }}
-                />
-              </ListItemButton>
-            </ListItem>
+                >
+                  <ListItemIcon sx={{ color: 'white', minWidth: 36 }}>
+                    <Icon />
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={category}
+                    primaryTypographyProps={{
+                      fontSize: '0.875rem',
+                      fontWeight: 600
+                    }}
+                  />
+                  {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+              </ListItem>
+
+              {/* Deportes/Ligas de la categoría */}
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {categoryData.sports.map((sport) => {
+                    const selected = isSelected(sport);
+                    
+                    return (
+                      <ListItem key={sport} disablePadding>
+                        <ListItemButton
+                          onClick={() => handleSportClick(sport)}
+                          sx={{
+                            py: 1,
+                            px: 4, // Indentación para subitems
+                            backgroundColor: selected ? 'rgba(255,255,255,0.15)' : 'transparent',
+                            borderRight: selected ? `3px solid ${theme.palette.secondary.main}` : 'none',
+                            '&:hover': {
+                              backgroundColor: 'rgba(255,255,255,0.08)'
+                            }
+                          }}
+                        >
+                          <ListItemText 
+                            primary={getShortName(sport)}
+                            primaryTypographyProps={{
+                              fontSize: '0.8rem',
+                              fontWeight: selected ? 600 : 400,
+                              color: selected ? 'white' : 'rgba(255,255,255,0.9)'
+                            }}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </Collapse>
+            </Box>
           );
         })}
       </List>

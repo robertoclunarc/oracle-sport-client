@@ -14,7 +14,9 @@ export const getSportsFromAPI = async () => {
 // Obtener eventos por deporte desde Odds API
 export const getEventsBySport = async (sportKey) => {
   try {
-    const response = await api.get(`/odds-api/events/${sportKey}`);
+    const url = `/odds-api/events/${sportKey}`;
+    console.log('Fetching events from URL:', url);
+    const response = await api.get(url);
     return response.data.data;
   } catch (error) {
     console.error(`Error obteniendo eventos para ${sportKey}:`, error);

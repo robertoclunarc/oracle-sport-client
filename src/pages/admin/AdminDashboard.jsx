@@ -16,7 +16,6 @@ import {
   TableRow,
   Chip,
   Alert,
-  //LinearProgress,
   List,
   ListItem,
   ListItemText,
@@ -24,16 +23,12 @@ import {
   Divider
 } from '@mui/material';
 import {
-  //Dashboard,
   People,
   Receipt,
   AttachMoney,
   TrendingUp,
   TrendingDown,
   Pending,
-  //CheckCircle,
-  //Cancel,
-  //Warning,
   Refresh,
   Sports
 } from '@mui/icons-material';
@@ -73,6 +68,12 @@ const AdminDashboard = () => {
       const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
       const token = localStorage.getItem('token');
       
+      if (!token) {
+        setError('No se encontró token de autenticación');
+        setLoading(false);
+        return;
+      }
+      
       const headers = { 'Authorization': `Bearer ${token}` };
 
       // Obtener todas las estadísticas en paralelo
@@ -84,12 +85,12 @@ const AdminDashboard = () => {
         pendingDepositsResponse,
         pendingWithdrawalsResponse
       ] = await Promise.all([
-        axios.get(`${API_URL}/users/admin/users?limit=1`, { headers }),
-        axios.get(`${API_URL}/bets/admin/all?limit=10`, { headers }),
-        axios.get(`${API_URL}/deposits/admin/all?limit=1`, { headers }),
-        axios.get(`${API_URL}/withdrawals/admin/all?limit=1`, { headers }),
-        axios.get(`${API_URL}/deposits/admin/all?status=pending&limit=5`, { headers }),
-        axios.get(`${API_URL}/withdrawals/admin/all?status=pending&limit=5`, { headers })
+        axios.get(`${API_URL}/users/admin/users?limit=1`, { headers }).catch(() => ({ data: { data: { pagination: { total: 0 } } } })),
+        axios.get(`${API_URL}/bets/admin/all?limit=10`, { headers }).catch(() => ({ data: { data: { pagination: { total: 0 }, tickets: [] } } })),
+        axios.get(`${API_URL}/deposits/admin/all?limit=1`, { headers }).catch(() => ({ data: { data: { pagination: { total: 0 } } } })),
+        axios.get(`${API_URL}/withdrawals/admin/all?limit=1`, { headers }).catch(() => ({ data: { data: { pagination: { total: 0 } } } })),
+        axios.get(`${API_URL}/deposits/admin/all?status=pending&limit=5`, { headers }).catch(() => ({ data: { data: { pagination: { total: 0 }, deposits: [] } } })),
+        axios.get(`${API_URL}/withdrawals/admin/all?status=pending&limit=5`, { headers }).catch(() => ({ data: { data: { pagination: { total: 0 }, withdrawals: [] } } }))
       ]);
 
       const statistics = {
@@ -106,8 +107,8 @@ const AdminDashboard = () => {
       setDashboardData({
         statistics,
         recentBets: betsResponse.data.data.tickets.slice(0, 5),
-        pendingDeposits: pendingDepositsResponse.data.data.deposits,
-        pendingWithdrawals: pendingWithdrawalsResponse.data.data.withdrawals,
+        pendingDeposits: pendingDepositsResponse.data.data.deposits || [],
+        pendingWithdrawals: pendingWithdrawalsResponse.data.data.withdrawals || [],
         systemAlerts: generateSystemAlerts(statistics)
       });
 
