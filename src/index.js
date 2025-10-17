@@ -7,6 +7,7 @@ import { SnackbarProvider } from 'notistack';
 import App from './App';
 import theme from './theme';
 import { AuthProvider } from './contexts/AuthContext';
+import { BettingProvider } from './contexts/BettingContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,7 +17,9 @@ root.render(
         <CssBaseline />
         <SnackbarProvider maxSnack={3}>
           <AuthProvider>
-            <App />
+            <BettingProvider>
+              <App />
+            </BettingProvider>
           </AuthProvider>          
         </SnackbarProvider>
       </ThemeProvider>

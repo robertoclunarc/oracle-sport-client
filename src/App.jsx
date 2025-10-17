@@ -1,118 +1,147 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
-import { Box, useMediaQuery } from '@mui/material';
-import { getThemeByMode } from './theme';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { Box } from '@mui/material';
 
-// Contextos
-import { AuthContext } from './contexts/AuthContext';
+// Contexts (solo el que falta)
 import { BettingProvider } from './contexts/BettingContext';
 
-// Componentes comunes
-import Header from './components/common/Header';
-import Footer from './components/common/Footer';
-import Sidebar from './components/common/Sidebar';
-import Loading from './components/common/Loading';
+// Components
+import Layout from './components/layout/Layout';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import AdminRoute from './components/auth/AdminRoute';
 
-// Páginas
-import Home from './pages/Home';
+// Pages
+import Sports from './pages/Sports';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Sports from './pages/Sports';
-import EventDetails from './pages/EventDetails';
-import Profile from './pages/Profile';
-import Deposit from './pages/Deposit';
-import Withdraw from './pages/Withdraw';
-import BetHistory from './pages/BetHistory';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import ManageUsers from './pages/admin/ManageUsers';
-import ManageBets from './pages/admin/ManageBets';
+import NotFound from './pages/NotFound';
 
-// Rutas protegidas
-const PrivateRoute = ({ children }) => {
-  const { isAuthenticated, loading } = React.useContext(AuthContext);
-  
-  if (loading) {
-    return <Loading />;
-  }
-  
-  return isAuthenticated ? children : <Navigate to="/login" />;
-};
+// Simple placeholder components for missing pages
+const Home = () => (
+  <Box sx={{ p: 3 }}>
+    <h1>Home Page - Coming Soon</h1>
+    <p>Welcome to Oracle Sport</p>
+  </Box>
+);
 
-// Rutas para administradores
-const AdminRoute = ({ children }) => {
-  const { isAuthenticated, user, loading } = React.useContext(AuthContext);
-  
-  if (loading) {
-    return <Loading />;
-  }
-  
-  return isAuthenticated && user?.role === 'admin' ? children : <Navigate to="/" />;
-};
+const Profile = () => (
+  <Box sx={{ p: 3 }}>
+    <h1>Profile Page</h1>
+  </Box>
+);
+
+const BetHistory = () => (
+  <Box sx={{ p: 3 }}>
+    <h1>Bet History Page</h1>
+  </Box>
+);
+
+const Deposit = () => (
+  <Box sx={{ p: 3 }}>
+    <h1>Deposit Page</h1>
+  </Box>
+);
+
+const Withdraw = () => (
+  <Box sx={{ p: 3 }}>
+    <h1>Withdraw Page</h1>
+  </Box>
+);
+
+const AdminDashboard = () => (
+  <Box sx={{ p: 3 }}>
+    <h1>Admin Dashboard</h1>
+  </Box>
+);
+
+// Layout Wrapper para rutas que necesitan layout
+const LayoutWrapper = ({ children }) => (
+  <Layout>
+    {children}
+  </Layout>
+);
 
 function App() {
-  const [themeMode, setThemeMode] = useState('light');
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const theme = getThemeByMode(themeMode);
-  
-  // Detectar preferencia de tema del sistema
-  useEffect(() => {
-    setThemeMode(prefersDarkMode ? 'dark' : 'light');
-  }, [prefersDarkMode]);
-
-  const toggleTheme = () => {
-    setThemeMode(prevMode => prevMode === 'light' ? 'dark' : 'light');
-  };
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
   return (
-    <ThemeProvider theme={theme}>      
-      <BettingProvider>
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          <Header 
-            onDrawerToggle={handleDrawerToggle} 
-            onThemeToggle={toggleTheme} 
-            themeMode={themeMode} 
-          />
-          <Box sx={{ display: 'flex', flex: 1 }}>
-            <Sidebar 
-              mobileOpen={mobileOpen} 
-              onDrawerToggle={handleDrawerToggle} 
-            />
-            <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, md: 3 }, width: '100%' }}>
-              <Routes>
-                {/* Rutas públicas */}
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/sports" element={<Sports />} />
-                <Route path="/sports/:sportKey" element={<Sports />} />
-                <Route path="/event/:eventId" element={<EventDetails />} />
-                
-                {/* Rutas protegidas */}
-                <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-                <Route path="/deposit" element={<PrivateRoute><Deposit /></PrivateRoute>} />
-                <Route path="/withdraw" element={<PrivateRoute><Withdraw /></PrivateRoute>} />
-                <Route path="/bet-history" element={<PrivateRoute><BetHistory /></PrivateRoute>} />
-                
-                {/* Rutas de administrador */}
-                <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-                <Route path="/admin/users" element={<AdminRoute><ManageUsers /></AdminRoute>} />
-                <Route path="/admin/bets" element={<AdminRoute><ManageBets /></AdminRoute>} />
-                
-                {/* Ruta 404 */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Box>
-          </Box>
-          <Footer />
-        </Box>
-      </BettingProvider>      
-    </ThemeProvider>
+    <BettingProvider>
+      <Routes>
+        {/* Rutas sin layout (Login/Register) */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        
+        {/* Rutas con layout */}
+        <Route path="/" element={
+          <LayoutWrapper>
+            <Home />
+          </LayoutWrapper>
+        } />
+        
+        <Route path="/sports" element={
+          <LayoutWrapper>
+            <Sports />
+          </LayoutWrapper>
+        } />
+        
+        <Route path="/sports/:sportKey" element={
+          <LayoutWrapper>
+            <Sports />
+          </LayoutWrapper>
+        } />
+        
+        {/* Rutas protegidas con layout */}
+        <Route path="/profile" element={
+          <LayoutWrapper>
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          </LayoutWrapper>
+        } />
+        
+        <Route path="/bet-history" element={
+          <LayoutWrapper>
+            <ProtectedRoute>
+              <BetHistory />
+            </ProtectedRoute>
+          </LayoutWrapper>
+        } />
+        
+        <Route path="/deposit" element={
+          <LayoutWrapper>
+            <ProtectedRoute>
+              <Deposit />
+            </ProtectedRoute>
+          </LayoutWrapper>
+        } />
+        
+        <Route path="/withdraw" element={
+          <LayoutWrapper>
+            <ProtectedRoute>
+              <Withdraw />
+            </ProtectedRoute>
+          </LayoutWrapper>
+        } />
+        
+        {/* Rutas de admin */}
+        <Route path="/admin" element={
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        } />
+        
+        <Route path="/admin/*" element={
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        } />
+        
+        {/* 404 */}
+        <Route path="*" element={
+          <LayoutWrapper>
+            <NotFound />
+          </LayoutWrapper>
+        } />
+      </Routes>
+    </BettingProvider>
   );
 }
 
