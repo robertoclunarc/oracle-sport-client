@@ -23,6 +23,7 @@ import {
   Search,
   Person,
   History,
+  AccountBalance,
   Logout,
   Receipt,
   Dashboard
@@ -135,14 +136,24 @@ const Header = () => {
                   </Button>
                   
                   {user?.role === 'admin' && (
-                    <Button 
-                      color="inherit" 
-                      component={RouterLink} 
-                      to="/admin"
-                      sx={{ fontWeight: 600 }}
-                    >
-                      Dashboard
-                    </Button>
+                    <>
+                      <Button 
+                        color="inherit" 
+                        component={RouterLink} 
+                        to="/admin"
+                        sx={{ fontWeight: 600 }}
+                      >
+                        Dashboard
+                      </Button>
+                      <Button 
+                        color="inherit" 
+                        component={RouterLink} 
+                        to="/admin/manage-bets"
+                        sx={{ fontWeight: 600 }}
+                      >
+                        Manage Bets
+                      </Button>
+                    </>
                   )}
                 </>
               )}
@@ -251,6 +262,16 @@ const Header = () => {
                 <MenuItem component={RouterLink} to="/bet-history" onClick={handleMenuClose}>
                   <ListItemIcon><History fontSize="small" /></ListItemIcon>
                   <ListItemText>My Bets</ListItemText>
+                </MenuItem>
+
+                <MenuItem component={RouterLink} to="/deposit" onClick={handleMenuClose}>
+                  <ListItemIcon><AccountBalance fontSize="small" /></ListItemIcon>
+                  <ListItemText>Deposit</ListItemText>
+                </MenuItem>
+
+                <MenuItem component={RouterLink} to="/withdraw" onClick={handleMenuClose}>
+                  <ListItemIcon><AccountBalance fontSize="small" /></ListItemIcon>
+                  <ListItemText>Withdraw</ListItemText>
                 </MenuItem>
                 
                 {user?.role === 'admin' && (

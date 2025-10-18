@@ -15,39 +15,12 @@ import Sports from './pages/Sports';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import NotFound from './pages/NotFound';
-import AdminDashboard from './pages/admin/AdminDashboard'; // Importar el componente real
-
-// Simple placeholder components for missing pages
-const Home = () => (
-  <Box sx={{ p: 3 }}>
-    <h1>Home Page - Coming Soon</h1>
-    <p>Welcome to Oracle Sport</p>
-  </Box>
-);
-
-const Profile = () => (
-  <Box sx={{ p: 3 }}>
-    <h1>Profile Page</h1>
-  </Box>
-);
-
-const BetHistory = () => (
-  <Box sx={{ p: 3 }}>
-    <h1>Bet History Page</h1>
-  </Box>
-);
-
-const Deposit = () => (
-  <Box sx={{ p: 3 }}>
-    <h1>Deposit Page</h1>
-  </Box>
-);
-
-const Withdraw = () => (
-  <Box sx={{ p: 3 }}>
-    <h1>Withdraw Page</h1>
-  </Box>
-);
+import AdminDashboard from './pages/admin/AdminDashboard';
+import BetHistory from './pages/BetHistory';
+import Profile from "./pages/Profile";
+import Deposit from "./pages/Deposit";
+import Withdraw from "./pages/Withdraw";
+import ManageBets from "./pages/admin/ManageBets";
 
 // Layout Wrapper para rutas que necesitan layout
 const LayoutWrapper = ({ children }) => (
@@ -77,7 +50,7 @@ function App() {
         {/* Rutas con layout */}
         <Route path="/" element={
           <LayoutWrapper>
-            <Home />
+            <Sports />
           </LayoutWrapper>
         } />
         
@@ -103,10 +76,8 @@ function App() {
         } />
         
         <Route path="/bet-history" element={
-          <LayoutWrapper>
-            <ProtectedRoute>
-              <BetHistory />
-            </ProtectedRoute>
+          <LayoutWrapper>            
+              <BetHistory />            
           </LayoutWrapper>
         } />
         
@@ -130,6 +101,14 @@ function App() {
           <AdminRoute>
             <LayoutWrapper>
               <AdminDashboard />
+            </LayoutWrapper>
+          </AdminRoute>  
+        } />
+
+        <Route path="/admin/manage-bets" element={
+          <AdminRoute>
+            <LayoutWrapper>
+              <ManageBets />
             </LayoutWrapper>
           </AdminRoute>  
         } />
