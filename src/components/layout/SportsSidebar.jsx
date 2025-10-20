@@ -29,12 +29,12 @@ import {
 } from '@mui/icons-material';
 import { getSports, getEvents } from '../../api/sports';
 
-const SportsSidebar = () => {
+const SportsSidebar = ({ isMobile = false, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
   const [availableSports, setAvailableSports] = useState([]);
-  const [expandedCategories, setExpandedCategories] = useState(['Soccer']); // Soccer expandido por defecto
+  const [expandedCategories, setExpandedCategories] = useState(['Soccer']);
   
   // Mapeo de deportes individuales a categorías principales
   const sportCategories = {
@@ -80,7 +80,6 @@ const SportsSidebar = () => {
     }
   };
 
-  // Obtener nombres cortos para el sidebar
   const getShortName = (sportName) => {
     const shortNames = {
       'Premier League': 'EPL',
@@ -105,14 +104,12 @@ const SportsSidebar = () => {
   useEffect(() => {
     const fetchAvailableSports = async () => {
       try {
-        // Obtener eventos para saber qué deportes tienen datos
         const events = await getEvents();
         const uniqueSports = [...new Set(events.map(event => event.sport).filter(Boolean))];
         setAvailableSports(uniqueSports);
       } catch (error) {
         console.warn('Error loading sports, using defaults:', error);
-        // Deportes por defecto si no hay conexión al API
-        setAvailableSports(['NBA', 'NFL', 'MLB', 'NHL', 'Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Champions League', 'Tennis', 'Golf', 'UFC', 'F1']);
+        setAvailableSports(['NBA', 'NFL', 'MLB', 'NHL', 'Premier League']);
       }
     };
 
@@ -130,6 +127,9 @@ const SportsSidebar = () => {
   const handleSportClick = (sportName) => {
     const sportSlug = sportName.toLowerCase().replace(/\s+/g, '-');
     navigate(`/sports/${sportSlug}`);
+    if (isMobile && onClose) {
+      onClose();
+    }
   };
 
   const isSelected = (sportName) => {
@@ -153,37 +153,29 @@ const SportsSidebar = () => {
     }
   });
 
-  return (
-    <Box
-      sx={{
-        width: 200,
-        height: '100vh',
-        backgroundColor: theme.palette.primary.main,
-        color: 'white',
-        position: 'fixed',
-        left: 0,
-        top: 64, // Height of AppBar
-        zIndex: theme.zIndex.drawer,
-        overflowY: 'auto'
-      }}
-    >
-      <Box sx={{ p: 2 }}>
-        <Typography 
-          variant="h6" 
-          sx={{ 
-            fontWeight: 'bold',
-            mb: 1,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1
-          }}
-        >
-          <Sports />
-          Sports
-        </Typography>
-      </Box>
-      
-      <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)' }} />
+  const sidebarContent = (
+    <>
+      {!isMobile && (
+        <>
+          <Box sx={{ p: 2 }}>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontWeight: 'bold',
+                mb: 1,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1
+              }}
+            >
+              <Sports />
+              Sports
+            </Typography>
+          </Box>
+          
+          <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)' }} />
+        </>
+      )}
       
       <List sx={{ p: 0 }}>
         {Object.entries(organizedSports).map(([category, categoryData]) => {
@@ -200,18 +192,19 @@ const SportsSidebar = () => {
                     py: 1.5,
                     px: 2,
                     '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.08)'
+                      backgroundColor: isMobile ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)'
                     }
                   }}
                 >
-                  <ListItemIcon sx={{ color: 'white', minWidth: 36 }}>
+                  <ListItemIcon sx={{ color: isMobile ? 'inherit' : 'white', minWidth: 36 }}>
                     <Icon />
                   </ListItemIcon>
                   <ListItemText 
                     primary={category}
                     primaryTypographyProps={{
                       fontSize: '0.875rem',
-                      fontWeight: 600
+                      fontWeight: 600,
+                      color: isMobile ? 'inherit' : 'white'
                     }}
                   />
                   {isExpanded ? <ExpandLess /> : <ExpandMore />}
@@ -230,11 +223,13 @@ const SportsSidebar = () => {
                           onClick={() => handleSportClick(sport)}
                           sx={{
                             py: 1,
-                            px: 4, // Indentación para subitems
-                            backgroundColor: selected ? 'rgba(255,255,255,0.15)' : 'transparent',
-                            borderRight: selected ? `3px solid ${theme.palette.secondary.main}` : 'none',
+                            px: 4,
+                            backgroundColor: selected ? 
+                              (isMobile ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.15)') : 
+                              'transparent',
+                            borderRight: selected && !isMobile ? `3px solid ${theme.palette.secondary.main}` : 'none',
                             '&:hover': {
-                              backgroundColor: 'rgba(255,255,255,0.08)'
+                              backgroundColor: isMobile ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)'
                             }
                           }}
                         >
@@ -243,7 +238,9 @@ const SportsSidebar = () => {
                             primaryTypographyProps={{
                               fontSize: '0.8rem',
                               fontWeight: selected ? 600 : 400,
-                              color: selected ? 'white' : 'rgba(255,255,255,0.9)'
+                              color: isMobile ? 
+                                (selected ? theme.palette.primary.main : 'inherit') :
+                                (selected ? 'white' : 'rgba(255,255,255,0.9)')
                             }}
                           />
                         </ListItemButton>
@@ -256,6 +253,30 @@ const SportsSidebar = () => {
           );
         })}
       </List>
+    </>
+  );
+
+  if (isMobile) {
+    // Para móvil, solo devolver el contenido sin el contenedor fijo
+    return sidebarContent;
+  }
+
+  // Para desktop, usar el contenedor fijo original
+  return (
+    <Box
+      sx={{
+        width: 200,
+        height: '100vh',
+        backgroundColor: theme.palette.primary.main,
+        color: 'white',
+        position: 'fixed',
+        left: 0,
+        top: 64,
+        zIndex: theme.zIndex.drawer,
+        overflowY: 'auto'
+      }}
+    >
+      {sidebarContent}
     </Box>
   );
 };

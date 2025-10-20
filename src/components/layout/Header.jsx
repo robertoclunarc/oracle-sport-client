@@ -17,20 +17,31 @@ import {
   useMediaQuery,
   ListItemIcon,
   ListItemText,
-  Divider
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton
 } from '@mui/material';
 import {
   Search,
   Person,
   History,
-  AccountBalance,
   Logout,
   Receipt,
-  Dashboard
+  Dashboard,
+  Menu as MenuIcon,
+  Close,
+  Home,
+  AccountBalanceWallet, AccountBalance,
+  TrendingUp,
+  TrendingDown,
+  AdminPanelSettings
 } from '@mui/icons-material';
 import AuthContext from '../../contexts/AuthContext';
 import BettingContext from '../../contexts/BettingContext';
 import BettingSlipModal from '../betting/BettingSlipModal';
+import SportsSidebar from './SportsSidebar';
 
 const Header = () => {
   const { isAuthenticated, user, logout } = useContext(AuthContext);
@@ -42,6 +53,7 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [bettingSlipModalOpen, setBettingSlipModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -67,6 +79,15 @@ const Header = () => {
       navigate(`/sports?search=${encodeURIComponent(searchTerm.trim())}`);
     }
   };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleMobileNavigation = (path) => {
+    navigate(path);
+    setMobileMenuOpen(false);
+  };
   
   return (
     <>
@@ -78,7 +99,18 @@ const Header = () => {
           zIndex: theme.zIndex.drawer + 1
         }}
       >
-        <Toolbar sx={{ px: { xs: 2, sm: 3 } }}>
+        <Toolbar sx={{ px: { xs: 1, sm: 3 } }}>
+          {/* Menú hamburguesa (solo móvil) */}
+          {isMobile && (
+            <IconButton
+              color="inherit"
+              onClick={toggleMobileMenu}
+              sx={{ mr: 1 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+
           {/* Logo */}
           <Box 
             component={RouterLink} 
@@ -88,13 +120,13 @@ const Header = () => {
               alignItems: 'center',
               textDecoration: 'none',
               color: 'inherit',
-              mr: 4
+              mr: { xs: 1, md: 4 }
             }}
           >
             <Box
               sx={{
-                width: 40,
-                height: 40,
+                width: { xs: 32, md: 40 },
+                height: { xs: 32, md: 40 },
                 backgroundColor: '#f59e0b',
                 borderRadius: '50%',
                 display: 'flex',
@@ -103,16 +135,21 @@ const Header = () => {
                 mr: 1
               }}
             >
-              <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold' }}>
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold', fontSize: { xs: '1rem', md: '1.25rem' } }}>
                 🏆
               </Typography>
             </Box>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>
+            <Typography variant="h6" sx={{ 
+              fontWeight: 'bold', 
+              color: 'white',
+              fontSize: { xs: '1rem', md: '1.25rem' },
+              display: { xs: 'none', sm: 'block' }
+            }}>
               ORACLE SPORT
             </Typography>
           </Box>
           
-          {/* Navigation Menu */}
+          {/* Navigation Menu (solo desktop) */}
           {!isMobile && (
             <Box sx={{ display: 'flex', gap: 1, mr: 4 }}>
               <Button 
@@ -153,6 +190,14 @@ const Header = () => {
                       >
                         Manage Bets
                       </Button>
+                      <Button 
+                        color="inherit" 
+                        component={RouterLink} 
+                        to="/admin/manage-users"
+                        sx={{ fontWeight: 600 }}
+                      >
+                        Manage Users
+                      </Button>
                     </>
                   )}
                 </>
@@ -161,7 +206,7 @@ const Header = () => {
           )}
           
           {/* Search Bar */}
-          <Box sx={{ flexGrow: 1, maxWidth: 400, mx: 2 }}>
+          <Box sx={{ flexGrow: 1, maxWidth: { xs: 200, md: 400 }, mx: { xs: 1, md: 2 } }}>
             <form onSubmit={handleSearch}>
               <TextField
                 size="small"
@@ -177,6 +222,7 @@ const Header = () => {
                   sx: {
                     backgroundColor: 'rgba(255,255,255,0.1)',
                     color: 'white',
+                    fontSize: { xs: '0.875rem', md: '1rem' },
                     '& .MuiOutlinedInput-notchedOutline': {
                       borderColor: 'rgba(255,255,255,0.3)',
                     },
@@ -201,7 +247,7 @@ const Header = () => {
             <IconButton 
               color="inherit"
               onClick={handleBettingSlipClick}
-              sx={{ mr: 2 }}
+              sx={{ mr: { xs: 0.5, md: 2 } }}
             >
               <Badge badgeContent={bettingSlip.length} color="error">
                 <Receipt />
@@ -212,24 +258,26 @@ const Header = () => {
           {/* Auth Buttons */}
           {isAuthenticated ? (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {/* User Balance */}
-              <Box sx={{ textAlign: 'right', mr: 1, display: { xs: 'none', sm: 'block' } }}>
-                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-                  Balance
-                </Typography>
-                <Typography variant="body1" sx={{ color: '#22c55e', fontWeight: 'bold' }}>
-                  ${Number(user?.balance || 0).toFixed(2)}
-                </Typography>
-              </Box>
+              {/* User Balance (solo desktop) */}
+              {!isMobile && (
+                <Box sx={{ textAlign: 'right', mr: 1 }}>
+                  <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                    Balance
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#22c55e', fontWeight: 'bold' }}>
+                    ${Number(user?.balance || 0).toFixed(2)}
+                  </Typography>
+                </Box>
+              )}
               
               {/* User Menu */}
               <IconButton onClick={handleMenuOpen} color="inherit">
                 <Avatar 
                   sx={{ 
-                    width: 32, 
-                    height: 32, 
+                    width: { xs: 28, md: 32 }, 
+                    height: { xs: 28, md: 32 }, 
                     backgroundColor: theme.palette.secondary.main,
-                    fontSize: '1rem'
+                    fontSize: { xs: '0.875rem', md: '1rem' }
                   }}
                 >
                   {user?.username?.charAt(0).toUpperCase()}
@@ -265,7 +313,7 @@ const Header = () => {
                 </MenuItem>
 
                 <MenuItem component={RouterLink} to="/deposit" onClick={handleMenuClose}>
-                  <ListItemIcon><AccountBalance fontSize="small" /></ListItemIcon>
+                  <ListItemIcon><AccountBalanceWallet fontSize="small" /></ListItemIcon>
                   <ListItemText>Deposit</ListItemText>
                 </MenuItem>
 
@@ -290,15 +338,17 @@ const Header = () => {
               </Menu>
             </Box>
           ) : (
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <Box sx={{ display: 'flex', gap: { xs: 0.5, md: 1 } }}>
               <Button 
                 variant="outlined"
                 component={RouterLink} 
                 to="/login"
+                size={isMobile ? 'small' : 'medium'}
                 sx={{ 
                   color: 'white',
                   borderColor: 'rgba(255,255,255,0.5)',
                   fontWeight: 600,
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
                   '&:hover': {
                     borderColor: 'white',
                     backgroundColor: 'rgba(255,255,255,0.1)'
@@ -312,9 +362,11 @@ const Header = () => {
                 variant="contained"
                 component={RouterLink} 
                 to="/register"
+                size={isMobile ? 'small' : 'medium'}
                 sx={{ 
                   backgroundColor: theme.palette.secondary.main,
                   fontWeight: 600,
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
                   '&:hover': {
                     backgroundColor: theme.palette.secondary.dark
                   }
@@ -326,6 +378,189 @@ const Header = () => {
           )}
         </Toolbar>
       </AppBar>
+
+      {/* Mobile Drawer Menu */}
+      <Drawer
+        anchor="left"
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        sx={{
+          display: { xs: 'block', md: 'none' },
+          '& .MuiDrawer-paper': {
+            width: 280,
+            boxSizing: 'border-box',
+          },
+        }}
+      >
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          {/* Header del drawer */}
+          <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e5e7eb' }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Menu
+            </Typography>
+            <IconButton onClick={() => setMobileMenuOpen(false)}>
+              <Close />
+            </IconButton>
+          </Box>
+
+          {/* Información del usuario (si está logueado) */}
+          {isAuthenticated && (
+            <Box sx={{ p: 2, backgroundColor: '#f8f9fa', borderBottom: '1px solid #e5e7eb' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                <Avatar 
+                  sx={{ 
+                    backgroundColor: theme.palette.secondary.main,
+                    fontSize: '1rem'
+                  }}
+                >
+                  {user?.username?.charAt(0).toUpperCase()}
+                </Avatar>
+                <Box>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    {user?.username}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Balance: ${Number(user?.balance || 0).toFixed(2)}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          )}
+
+          {/* Navegación principal */}
+          <List sx={{ flexGrow: 1 }}>
+            {/* Home */}
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => handleMobileNavigation('/')}>
+                <ListItemIcon>
+                  <Home />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItemButton>
+            </ListItem>
+
+            {/* My Bets (solo si está autenticado) */}
+            {isAuthenticated && (
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => handleMobileNavigation('/bet-history')}>
+                  <ListItemIcon>
+                    <History />
+                  </ListItemIcon>
+                  <ListItemText primary="My Bets" />
+                </ListItemButton>
+              </ListItem>
+            )}
+
+            {/* Profile (solo si está autenticado) */}
+            {isAuthenticated && (
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => handleMobileNavigation('/profile')}>
+                  <ListItemIcon>
+                    <Person />
+                  </ListItemIcon>
+                  <ListItemText primary="Profile" />
+                </ListItemButton>
+              </ListItem>
+            )}
+
+            <Divider />
+
+            {/* Sección financiera (solo si está autenticado) */}
+            {isAuthenticated && (
+              <>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => handleMobileNavigation('/deposit')}>
+                    <ListItemIcon>
+                      <TrendingUp color="success" />
+                    </ListItemIcon>
+                    <ListItemText primary="Deposit" />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => handleMobileNavigation('/withdraw')}>
+                    <ListItemIcon>
+                      <TrendingDown color="warning" />
+                    </ListItemIcon>
+                    <ListItemText primary="Withdraw" />
+                  </ListItemButton>
+                </ListItem>
+
+                <Divider />
+              </>
+            )}
+
+            {/* Admin Dashboard (solo para admins) */}
+            {isAuthenticated && user?.role === 'admin' && (
+              <>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => handleMobileNavigation('/admin')}>
+                    <ListItemIcon>
+                      <AdminPanelSettings color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Admin Dashboard" />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => handleMobileNavigation('/admin/manage-bets')}>
+                    <ListItemIcon>
+                      <AdminPanelSettings color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Manage Bets" />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => handleMobileNavigation('/admin/manage-users')}>
+                    <ListItemIcon>
+                      <AdminPanelSettings color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Manage Users" />
+                  </ListItemButton>
+                </ListItem>
+              </>  
+            )}
+          </List>
+
+          {/* Sports Sidebar */}
+          <Divider />
+          <SportsSidebar isMobile onClose={() => setMobileMenuOpen(false)} />
+
+          {/* Logout o Login/Register */}
+          <Box sx={{ p: 2, borderTop: '1px solid #e5e7eb' }}>
+            {isAuthenticated ? (
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<Logout />}
+                onClick={() => {
+                  handleLogout();
+                  setMobileMenuOpen(false);
+                }}
+                color="error"
+              >
+                Logout
+              </Button>
+            ) : (
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={() => handleMobileNavigation('/login')}
+                >
+                  Login
+                </Button>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={() => handleMobileNavigation('/register')}
+                >
+                  Register
+                </Button>
+              </Box>
+            )}
+          </Box>
+        </Box>
+      </Drawer>
 
       <BettingSlipModal 
         open={bettingSlipModalOpen}

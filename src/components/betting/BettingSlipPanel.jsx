@@ -12,7 +12,10 @@ import {
   Chip,
   Alert,
   useTheme,
-  Collapse
+  useMediaQuery,
+  Collapse,
+  Fab,
+  Badge
 } from '@mui/material';
 import {
   Close,
@@ -20,8 +23,7 @@ import {
   ExpandMore,
   ExpandLess,
   Receipt,
-  Calculate,
-  MonetizationOn
+  ShoppingCart
 } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import BettingContext from '../../contexts/BettingContext';
@@ -33,10 +35,12 @@ const BettingSlipPanel = () => {
   const { user, isAuthenticated } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   const [stakeAmount, setStakeAmount] = useState('');
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(true); // ✅ Desplegado por defecto
   const [placingBet, setPlacingBet] = useState(false);
+  const [showMobileBetSlip, setShowMobileBetSlip] = useState(false);
 
   // Calcular cuota total
   const totalOdds = bettingSlip.reduce((total, bet) => {
@@ -98,6 +102,7 @@ const BettingSlipPanel = () => {
       enqueueSnackbar('¡Apuesta realizada exitosamente!', { variant: 'success' });
       clearBettingSlip();
       setStakeAmount('');
+      setShowMobileBetSlip(false);
 
     } catch (error) {
       enqueueSnackbar(
@@ -118,72 +123,231 @@ const BettingSlipPanel = () => {
     return parseFloat(amount || 0).toFixed(2);
   };
 
-  // Si no hay apuestas, mostrar panel colapsado
-  if (bettingSlip.length === 0) {
+  // Botón flotante para móvil
+  if (isMobile) {
     return (
-      <Box
-        sx={{
-          position: 'fixed',
-          top: 120,
-          right: 20,
-          width: 320,
-          zIndex: 1000
-        }}
-      >
-        <Paper
-          sx={{
-            borderRadius: 2,
-            overflow: 'hidden',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
-          }}
-        >
-          {/* Header */}
-          <Box
+      <>
+        {/* FAB para mostrar betting slip */}
+        {bettingSlip.length > 0 && (
+          <Fab
+            color="primary"
+            onClick={() => setShowMobileBetSlip(true)}
             sx={{
-              backgroundColor: theme.palette.primary.main,
-              color: 'white',
-              p: 2,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
+              position: 'fixed',
+              bottom: 20,
+              right: 20,
+              zIndex: 1000
             }}
           >
-            <Box
-              sx={{
-                backgroundColor: 'white',
-                color: theme.palette.primary.main,
-                borderRadius: '50%',
-                width: 24,
-                height: 24,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '0.875rem',
-                fontWeight: 'bold'
-              }}
-            >
-              0
-            </Box>
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              Betslip
-            </Typography>
-          </Box>
+            <Badge badgeContent={bettingSlip.length} color="error">
+              <ShoppingCart />
+            </Badge>
+          </Fab>
+        )}
 
-          {/* Empty state */}
-          <Box sx={{ p: 3, textAlign: 'center' }}>
-            <Receipt sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              No selections yet
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Click on odds to add to your betslip
-            </Typography>
+        {/* Modal de betting slip para móvil */}
+        {showMobileBetSlip && (
+          <Box
+            sx={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              zIndex: 1300,
+              display: 'flex',
+              alignItems: 'flex-end'
+            }}
+            onClick={() => setShowMobileBetSlip(false)}
+          >
+            <Paper
+              sx={{
+                width: '100%',
+                maxHeight: '80vh',
+                borderRadius: '16px 16px 0 0',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <Box
+                sx={{
+                  p: 2,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  borderBottom: '1px solid #e5e7eb'
+                }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                  Betslip ({bettingSlip.length})
+                </Typography>
+                <IconButton onClick={() => setShowMobileBetSlip(false)}>
+                  <Close />
+                </IconButton>
+              </Box>
+
+              {/* Content móvil */}
+              <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 2 }}>
+                {/* Selecciones móvil */}
+                {bettingSlip.map((bet, index) => (
+                  <Card key={bet.id} sx={{ mb: 1.5, border: '1px solid #e5e7eb' }}>
+                    <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                        <Box sx={{ flexGrow: 1, mr: 1 }}>
+                          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                            {bet.league}
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.875rem', lineHeight: 1.2 }}>
+                            {bet.matchup}
+                          </Typography>
+                        </Box>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleRemoveBet(bet.id)}
+                          sx={{ p: 0.5 }}
+                        >
+                          <Close fontSize="small" />
+                        </IconButton>
+                      </Box>
+                      
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>
+                            {bet.selection}
+                          </Typography>
+                          {bet.isParlayBet && bet.selections && (
+                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                              {bet.selections.length} leg parlay
+                            </Typography>
+                          )}
+                        </Box>
+                        <Chip
+                          label={formatOdds(bet.price)}
+                          size="small"
+                          sx={{
+                            backgroundColor: bet.isParlayBet ? '#f59e0b' : theme.palette.success.main,
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '0.75rem'
+                          }}
+                        />
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+
+              {/* Bottom section móvil - apuesta */}
+              <Box sx={{ p: 2, backgroundColor: '#f8f9fa' }}>
+                {/* Cuota total */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                    Total Odds:
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                    {totalOdds.toFixed(2)}
+                  </Typography>
+                </Box>
+
+                {/* Input de monto */}
+                <TextField
+                  fullWidth
+                  label="Wager Amount"
+                  type="number"
+                  value={stakeAmount}
+                  onChange={(e) => setStakeAmount(e.target.value)}
+                  inputProps={{ 
+                    min: 1, 
+                    max: user?.balance || 0,
+                    step: 0.01
+                  }}
+                  sx={{ mb: 2 }}
+                  size="small"
+                  placeholder="$0.00"
+                />
+
+                {/* Cálculos */}
+                {stakeAmount && (
+                  <Box sx={{ mb: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                      <Typography variant="body2">Wager:</Typography>
+                      <Typography variant="body2">
+                        ${formatCurrency(stakeAmount)}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                      <Typography variant="body2">To Win:</Typography>
+                      <Typography variant="body2" sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                        +${formatCurrency(potentialProfit)}
+                      </Typography>
+                    </Box>
+                    <Divider sx={{ my: 1 }} />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                        Total Payout:
+                      </Typography>
+                      <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'success.main' }}>
+                        ${formatCurrency(potentialPayout)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
+
+                {/* Balance */}
+                {isAuthenticated && (
+                  <Alert severity="info" sx={{ mb: 2, py: 0.5 }}>
+                    <Typography variant="caption">
+                      Available: ${formatCurrency(user?.balance)}
+                    </Typography>
+                  </Alert>
+                )}
+
+                {/* Botón de apuesta */}
+                {isAuthenticated ? (
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    onClick={handlePlaceBet}
+                    disabled={!stakeAmount || parseFloat(stakeAmount) <= 0 || placingBet}
+                    sx={{
+                      backgroundColor: theme.palette.success.main,
+                      fontWeight: 'bold',
+                      py: 1.5,
+                      '&:hover': {
+                        backgroundColor: theme.palette.success.dark
+                      }
+                    }}
+                  >
+                    {placingBet ? 'Placing Bet...' : `BET $${formatCurrency(stakeAmount)}`}
+                  </Button>
+                ) : (
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      backgroundColor: theme.palette.success.main,
+                      fontWeight: 'bold',
+                      py: 1.5,
+                      '&:hover': {
+                        backgroundColor: theme.palette.success.dark
+                      }
+                    }}
+                  >
+                    LOG IN OR JOIN TO WIN $0.00
+                  </Button>
+                )}
+              </Box>
+            </Paper>
           </Box>
-        </Paper>
-      </Box>
+        )}
+      </>
     );
   }
 
+  // VERSIÓN DESKTOP - Panel fijo siempre visible
   return (
     <Box
       sx={{
@@ -192,7 +356,8 @@ const BettingSlipPanel = () => {
         right: 20,
         width: 350,
         maxHeight: 'calc(100vh - 140px)',
-        zIndex: 1000
+        zIndex: 1000,
+        display: { xs: 'none', md: 'block' }
       }}
     >
       <Paper
@@ -205,7 +370,7 @@ const BettingSlipPanel = () => {
           flexDirection: 'column'
         }}
       >
-        {/* Header */}
+        {/* Header siempre visible */}
         <Box
           sx={{
             backgroundColor: theme.palette.primary.main,
@@ -239,170 +404,196 @@ const BettingSlipPanel = () => {
           </Box>
           
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <IconButton
-              size="small"
-              onClick={() => setIsExpanded(!isExpanded)}
-              sx={{ color: 'white' }}
-            >
-              {isExpanded ? <ExpandLess /> : <ExpandMore />}
-            </IconButton>
-            <IconButton
-              size="small"
-              onClick={handleClearAll}
-              sx={{ color: 'white' }}
-            >
-              <Delete />
-            </IconButton>
+            {bettingSlip.length > 0 && (
+              <>
+                <IconButton
+                  size="small"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  sx={{ color: 'white' }}
+                >
+                  {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={handleClearAll}
+                  sx={{ color: 'white' }}
+                >
+                  <Delete />
+                </IconButton>
+              </>
+            )}
           </Box>
         </Box>
 
-        <Collapse in={isExpanded}>
-          <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
-            {/* Selecciones */}
-            <Box sx={{ p: 2 }}>
-              {bettingSlip.map((bet, index) => (
-                <Card key={bet.id} sx={{ mb: 1.5, border: '1px solid #e5e7eb' }}>
-                  <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                      <Box sx={{ flexGrow: 1, mr: 1 }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
-                          {bet.league}
-                        </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.875rem', lineHeight: 1.2 }}>
-                          {bet.matchup}
-                        </Typography>
+        {/* Contenido principal - siempre expandido si hay apuestas */}
+        {bettingSlip.length === 0 ? (
+          // Estado vacío
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Receipt sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              No selections yet
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Click on odds to add to your betslip
+            </Typography>
+          </Box>
+        ) : (
+          // Contenido con apuestas - siempre mostrado
+          <Collapse in={isExpanded} unmountOnExit>
+            <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
+              {/* Selecciones */}
+              <Box sx={{ p: 2 }}>
+                {bettingSlip.map((bet, index) => (
+                  <Card key={bet.id} sx={{ mb: 1.5, border: '1px solid #e5e7eb' }}>
+                    <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                        <Box sx={{ flexGrow: 1, mr: 1 }}>
+                          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                            {bet.league}
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.875rem', lineHeight: 1.2 }}>
+                            {bet.matchup}
+                          </Typography>
+                        </Box>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleRemoveBet(bet.id)}
+                          sx={{ p: 0.5 }}
+                        >
+                          <Close fontSize="small" />
+                        </IconButton>
                       </Box>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleRemoveBet(bet.id)}
-                        sx={{ p: 0.5 }}
-                      >
-                        <Close fontSize="small" />
-                      </IconButton>
-                    </Box>
-                    
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>
-                        {bet.selection}
-                      </Typography>
-                      <Chip
-                        label={formatOdds(bet.price)}
-                        size="small"
-                        sx={{
-                          backgroundColor: theme.palette.success.main,
-                          color: 'white',
-                          fontWeight: 'bold',
-                          fontSize: '0.75rem'
-                        }}
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
-          </Box>
-
-          {/* Cálculos y apuesta */}
-          <Box sx={{ p: 2, backgroundColor: '#f8f9fa' }}>
-            {/* Cuota total */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                Total Odds:
-              </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                {totalOdds.toFixed(2)}
-              </Typography>
-            </Box>
-
-            {/* Input de monto */}
-            <TextField
-              fullWidth
-              label="Wager Amount"
-              type="number"
-              value={stakeAmount}
-              onChange={(e) => setStakeAmount(e.target.value)}
-              inputProps={{ 
-                min: 1, 
-                max: user?.balance || 0,
-                step: 0.01
-              }}
-              sx={{ mb: 2 }}
-              size="small"
-              placeholder="$0.00"
-            />
-
-            {/* Cálculos de ganancia */}
-            {stakeAmount && (
-              <Box sx={{ mb: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">Wager:</Typography>
-                  <Typography variant="body2">
-                    ${formatCurrency(stakeAmount)}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2">To Win:</Typography>
-                  <Typography variant="body2" sx={{ color: 'success.main', fontWeight: 'bold' }}>
-                    +${formatCurrency(potentialProfit)}
-                  </Typography>
-                </Box>
-                <Divider sx={{ my: 1 }} />
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                    Total Payout:
-                  </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'success.main' }}>
-                    ${formatCurrency(potentialPayout)}
-                  </Typography>
-                </Box>
+                      
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>
+                            {bet.selection}
+                          </Typography>
+                          {bet.isParlayBet && bet.selections && (
+                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                              {bet.selections.length} leg parlay
+                            </Typography>
+                          )}
+                        </Box>
+                        <Chip
+                          label={formatOdds(bet.price)}
+                          size="small"
+                          sx={{
+                            backgroundColor: bet.isParlayBet ? '#f59e0b' : theme.palette.success.main,
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '0.75rem'
+                          }}
+                        />
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))}
               </Box>
-            )}
+            </Box>
 
-            {/* Balance del usuario */}
-            {isAuthenticated && (
-              <Alert severity="info" sx={{ mb: 2, py: 0.5 }}>
-                <Typography variant="caption">
-                  Available: ${formatCurrency(user?.balance)}
+            {/* Cálculos y apuesta */}
+            <Box sx={{ p: 2, backgroundColor: '#f8f9fa' }}>
+              {/* Cuota total */}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                  Total Odds:
                 </Typography>
-              </Alert>
-            )}
+                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                  {totalOdds.toFixed(2)}
+                </Typography>
+              </Box>
 
-            {/* Botón de apuesta */}
-            {isAuthenticated ? (
-              <Button
+              {/* Input de monto */}
+              <TextField
                 fullWidth
-                variant="contained"
-                onClick={handlePlaceBet}
-                disabled={!stakeAmount || parseFloat(stakeAmount) <= 0 || placingBet}
-                sx={{
-                  backgroundColor: theme.palette.success.main,
-                  fontWeight: 'bold',
-                  py: 1.5,
-                  '&:hover': {
-                    backgroundColor: theme.palette.success.dark
-                  }
+                label="Wager Amount"
+                type="number"
+                value={stakeAmount}
+                onChange={(e) => setStakeAmount(e.target.value)}
+                inputProps={{ 
+                  min: 1, 
+                  max: user?.balance || 0,
+                  step: 0.01
                 }}
-              >
-                {placingBet ? 'Placing Bet...' : `BET $${formatCurrency(stakeAmount)}`}
-              </Button>
-            ) : (
-              <Button
-                fullWidth
-                variant="contained"
-                sx={{
-                  backgroundColor: theme.palette.success.main,
-                  fontWeight: 'bold',
-                  py: 1.5,
-                  '&:hover': {
-                    backgroundColor: theme.palette.success.dark
-                  }
-                }}
-              >
-                LOG IN OR JOIN TO WIN $0.00
-              </Button>
-            )}
-          </Box>
-        </Collapse>
+                sx={{ mb: 2 }}
+                size="small"
+                placeholder="$0.00"
+              />
+
+              {/* Cálculos de ganancia */}
+              {stakeAmount && (
+                <Box sx={{ mb: 2 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Typography variant="body2">Wager:</Typography>
+                    <Typography variant="body2">
+                      ${formatCurrency(stakeAmount)}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Typography variant="body2">To Win:</Typography>
+                    <Typography variant="body2" sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                      +${formatCurrency(potentialProfit)}
+                    </Typography>
+                  </Box>
+                  <Divider sx={{ my: 1 }} />
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                      Total Payout:
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'success.main' }}>
+                      ${formatCurrency(potentialPayout)}
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
+
+              {/* Balance del usuario */}
+              {isAuthenticated && (
+                <Alert severity="info" sx={{ mb: 2, py: 0.5 }}>
+                  <Typography variant="caption">
+                    Available: ${formatCurrency(user?.balance)}
+                  </Typography>
+                </Alert>
+              )}
+
+              {/* Botón de apuesta */}
+              {isAuthenticated ? (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={handlePlaceBet}
+                  disabled={!stakeAmount || parseFloat(stakeAmount) <= 0 || placingBet}
+                  sx={{
+                    backgroundColor: theme.palette.success.main,
+                    fontWeight: 'bold',
+                    py: 1.5,
+                    '&:hover': {
+                      backgroundColor: theme.palette.success.dark
+                    }
+                  }}
+                >
+                  {placingBet ? 'Placing Bet...' : `BET $${formatCurrency(stakeAmount)}`}
+                </Button>
+              ) : (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    backgroundColor: theme.palette.success.main,
+                    fontWeight: 'bold',
+                    py: 1.5,
+                    '&:hover': {
+                      backgroundColor: theme.palette.success.dark
+                    }
+                  }}
+                >
+                  LOG IN OR JOIN TO WIN $0.00
+                </Button>
+              )}
+            </Box>
+          </Collapse>
+        )}
       </Paper>
     </Box>
   );

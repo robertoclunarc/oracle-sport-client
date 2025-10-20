@@ -21,6 +21,7 @@ import Profile from "./pages/Profile";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
 import ManageBets from "./pages/admin/ManageBets";
+import ManageUsers from "./pages/admin/ManageUsers";
 
 // Layout Wrapper para rutas que necesitan layout
 const LayoutWrapper = ({ children }) => (
@@ -109,6 +110,14 @@ function App() {
           <AdminRoute>
             <LayoutWrapper>
               <ManageBets />
+            </LayoutWrapper>
+          </AdminRoute>  
+        } />
+
+        <Route path="/admin/manage-users" element={
+          <AdminRoute>
+            <LayoutWrapper>
+              <ManageUsers />
             </LayoutWrapper>
           </AdminRoute>  
         } />
