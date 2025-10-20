@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { Box } from '@mui/material';
+//import { Box } from '@mui/material';
 
 // Contexts (solo el que falta)
 import { BettingProvider } from './contexts/BettingContext';
@@ -28,16 +28,6 @@ const LayoutWrapper = ({ children }) => (
   <Layout>
     {children}
   </Layout>
-);
-
-// Layout especial para admin (sin sidebar de deportes ni betting panel)
-const AdminLayoutWrapper = ({ children }) => (
-  <Box sx={{ 
-    minHeight: '100vh',
-    backgroundColor: (theme) => theme.palette.background.default 
-  }}>
-    {children}
-  </Box>
 );
 
 function App() {
