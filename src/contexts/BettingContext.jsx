@@ -1,160 +1,107 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import AuthContext from './AuthContext';
-import { placeBet, getUserBets } from '../api/bets';
+import React, { createContext, useReducer, useEffect } from 'react';
 
-export const BettingContext = createContext();
+const BettingContext = createContext();
+
+// Actions para el reducer
+const ACTIONS = {
+  ADD_BET: 'ADD_BET',
+  REMOVE_BET: 'REMOVE_BET',
+  CLEAR_ALL: 'CLEAR_ALL',
+  LOAD_FROM_STORAGE: 'LOAD_FROM_STORAGE'
+};
+
+// Reducer para manejar el estado del betting slip
+const bettingReducer = (state, action) => {
+  switch (action.type) {
+    case ACTIONS.ADD_BET:
+      // Verificar si la apuesta ya existe
+      const existingBetIndex = state.findIndex(bet => bet.id === action.payload.id);
+      
+      if (existingBetIndex !== -1) {
+        // Si existe, la removemos (toggle behavior)
+        return state.filter(bet => bet.id !== action.payload.id);
+      } else {
+        // Si no existe, la agregamos
+        return [...state, action.payload];
+      }
+      
+    case ACTIONS.REMOVE_BET:
+      return state.filter(bet => bet.id !== action.payload);
+      
+    case ACTIONS.CLEAR_ALL:
+      return [];
+      
+    case ACTIONS.LOAD_FROM_STORAGE:
+      return action.payload || [];
+      
+    default:
+      return state;
+  }
+};
 
 export const BettingProvider = ({ children }) => {
-  const { isAuthenticated, user } = useContext(AuthContext);
-  const [bettingSlip, setBettingSlip] = useState([]);
-  const [betAmount, setBetAmount] = useState(100);
-  const [totalOdds, setTotalOdds] = useState(0);
-  const [potentialWin, setPotentialWin] = useState(0);
-  const [userBets, setUserBets] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [bettingSlip, dispatch] = useReducer(bettingReducer, []);
 
-  // Calcular cuotas totales y potencial ganancia cada vez que cambian las selecciones o el monto
+  // Cargar desde localStorage al inicializar
   useEffect(() => {
-    if (bettingSlip.length === 0) {
-      setTotalOdds(0);
-      setPotentialWin(0);
-      return;
+    const savedBettingSlip = localStorage.getItem('bettingSlip');
+    if (savedBettingSlip) {
+      try {
+        const parsed = JSON.parse(savedBettingSlip);
+        dispatch({ type: ACTIONS.LOAD_FROM_STORAGE, payload: parsed });
+      } catch (error) {
+        console.error('Error parsing betting slip from localStorage:', error);
+      }
     }
+  }, []);
 
-    // Calcular cuotas totales (multiplicación de todas las cuotas en formato decimal)
-    let calculatedOdds = 1;
-    bettingSlip.forEach(bet => {
-      // Convertir las cuotas americanas a decimales
-      const decimalOdds = convertAmericanToDecimal(bet.price);
-      calculatedOdds *= decimalOdds;
-    });
+  // Guardar en localStorage cuando cambie
+  useEffect(() => {
+    localStorage.setItem('bettingSlip', JSON.stringify(bettingSlip));
+  }, [bettingSlip]);
 
-    setTotalOdds(calculatedOdds);
-    
-    // Calcular potencial ganancia
-    const potentialPayout = betAmount * calculatedOdds;
-    setPotentialWin(potentialPayout - betAmount);
-  }, [bettingSlip, betAmount]);
-
-  // Convertir cuota americana a decimal
-  const convertAmericanToDecimal = (americanOdds) => {
-    if (americanOdds > 0) {
-      return 1 + (americanOdds / 100);
-    } else {
-      return 1 + (100 / Math.abs(americanOdds));
-    }
+  // Funciones del contexto
+  const addToBettingSlip = (bet) => {
+    dispatch({ type: ACTIONS.ADD_BET, payload: bet });
   };
 
-  // Añadir una selección al boleto de apuestas
-  const addToBettingSlip = (selection) => {
-    // Verificar si la selección ya existe
-    const existingIndex = bettingSlip.findIndex(
-      bet => bet.eventId === selection.eventId && bet.marketType === selection.marketType
-    );
-
-    if (existingIndex !== -1) {
-      // Reemplazar la selección anterior del mismo tipo
-      const updatedSlip = [...bettingSlip];
-      updatedSlip[existingIndex] = selection;
-      setBettingSlip(updatedSlip);
-    } else {
-      // Añadir nueva selección
-      setBettingSlip([...bettingSlip, selection]);
-    }
+  const removeBetFromSlip = (betId) => {
+    dispatch({ type: ACTIONS.REMOVE_BET, payload: betId });
   };
 
-  // Eliminar una selección del boleto
-  const removeFromBettingSlip = (id) => {
-    setBettingSlip(bettingSlip.filter(bet => bet.id !== id));
-  };
-
-  // Limpiar el boleto de apuestas
   const clearBettingSlip = () => {
-    setBettingSlip([]);
+    dispatch({ type: ACTIONS.CLEAR_ALL });
   };
 
-  // Realizar la apuesta
-  const submitBet = async () => {
-    if (!isAuthenticated) {
-      setError('Debes iniciar sesión para realizar una apuesta');
-      return;
-    }
-
-    if (bettingSlip.length === 0) {
-      setError('El boleto de apuestas está vacío');
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Preparar los datos para la API
-      const betData = {
-        stakeAmount: betAmount,
-        selections: bettingSlip.map(bet => ({
-          oddsId: bet.oddsId,
-        }))
-      };
-
-      // Enviar la apuesta
-      const response = await placeBet(betData);
-      
-      // Limpiar el boleto después de una apuesta exitosa
-      clearBettingSlip();
-      
-      // Actualizar historial de apuestas
-      fetchUserBets();
-      
-      return response;
-    } catch (error) {
-      setError(error.response?.data?.message || 'Error al realizar la apuesta');
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+  const isBetInSlip = (betId) => {
+    return bettingSlip.some(bet => bet.id === betId);
   };
 
-  // Obtener historial de apuestas del usuario
-  const fetchUserBets = async () => {
-    if (!isAuthenticated) return;
-    
-    setLoading(true);
-    
-    try {
-      const bets = await getUserBets();
-      setUserBets(bets);
-    } catch (error) {
-      console.error('Error al obtener historial de apuestas:', error);
-    } finally {
-      setLoading(false);
-    }
+  const getTotalOdds = () => {
+    return bettingSlip.reduce((total, bet) => {
+      const odds = parseFloat(bet.price);
+      const decimalOdds = odds >= 0 ? (odds / 100) + 1 : 100 / Math.abs(odds) + 1;
+      return total * decimalOdds;
+    }, 1);
   };
 
-  // Cargar historial de apuestas cuando el usuario está autenticado
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchUserBets();
-    }
-  }, [isAuthenticated]);
+  const getPotentialPayout = (stakeAmount) => {
+    const totalOdds = getTotalOdds();
+    return parseFloat(stakeAmount || 0) * totalOdds;
+  };
+
+  const contextValue = {
+    bettingSlip,
+    addToBettingSlip,
+    removeBetFromSlip,
+    clearBettingSlip,
+    isBetInSlip,
+    getTotalOdds,
+    getPotentialPayout
+  };
 
   return (
-    <BettingContext.Provider value={{
-      bettingSlip,
-      betAmount,
-      totalOdds,
-      potentialWin,
-      userBets,
-      loading,
-      error,
-      setBetAmount,
-      addToBettingSlip,
-      removeFromBettingSlip,
-      clearBettingSlip,
-      submitBet,
-      fetchUserBets
-    }}>
+    <BettingContext.Provider value={contextValue}>
       {children}
     </BettingContext.Provider>
   );

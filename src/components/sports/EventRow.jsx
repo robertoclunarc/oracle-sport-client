@@ -13,7 +13,7 @@ import { es } from 'date-fns/locale';
 import BettingContext from '../../contexts/BettingContext';
 
 const EventRow = ({ event, selectedSport }) => {
-  const { addToBettingSlip } = useContext(BettingContext);
+  const { addToBettingSlip, bettingSlip } = useContext(BettingContext); // ✅ Agregar bettingSlip para verificar selecciones
   const theme = useTheme();
 
   const eventTime = new Date(event.commence_time);
@@ -75,39 +75,77 @@ const EventRow = ({ event, selectedSport }) => {
     return odds >= 0 ? `+${odds}` : odds.toString();
   };
 
-  const OddsButton = ({ odds, label, onClick, variant = 'outlined' }) => (
-    <Button
-      variant={variant}
-      size="small"
-      onClick={onClick}
-      sx={{
-        minWidth: 60,
-        py: 0.5,
-        px: 1,
-        fontSize: '0.75rem',
-        fontWeight: 'bold',
-        border: '1px solid #e5e7eb',
-        backgroundColor: 'white',
-        color: theme.palette.text.primary,
-        '&:hover': {
-          backgroundColor: theme.palette.primary.main,
-          color: 'white',
-          borderColor: theme.palette.primary.main
-        }
-      }}
-    >
-      <Box sx={{ textAlign: 'center' }}>
-        {label && (
-          <Typography variant="caption" display="block" sx={{ lineHeight: 1 }}>
-            {label}
+  // ✅ Función para verificar si una apuesta está seleccionada
+  const isBetSelected = (betType, selection) => {
+    const betId = `${event.id || event.api_event_id}-${betType}-${selection}`;
+    return bettingSlip.some(bet => bet.id === betId);
+  };
+
+  const OddsButton = ({ odds, label, onClick, betType, selection, variant = 'outlined' }) => {
+    const isSelected = isBetSelected(betType, selection);
+    
+    return (
+      <Button
+        variant={variant}
+        size="small"
+        onClick={onClick}
+        sx={{
+          minWidth: 60,
+          py: 0.5,
+          px: 1,
+          fontSize: '0.75rem',
+          fontWeight: 'bold',
+          // ✅ Estilos condicionales basados en selección
+          border: isSelected 
+            ? `1px solid ${theme.palette.primary.main}` 
+            : '1px solid #e5e7eb',
+          backgroundColor: isSelected 
+            ? theme.palette.primary.main 
+            : 'white',
+          color: isSelected 
+            ? 'white' 
+            : theme.palette.text.primary,
+          // ✅ Hover diferente para elementos seleccionados vs no seleccionados
+          '&:hover': {
+            backgroundColor: isSelected 
+              ? theme.palette.primary.dark 
+              : theme.palette.primary.main,
+            color: 'white',
+            borderColor: isSelected 
+              ? theme.palette.primary.dark 
+              : theme.palette.primary.main,
+          },
+          // ✅ Transición suave
+          transition: 'all 0.2s ease-in-out'
+        }}
+      >
+        <Box sx={{ textAlign: 'center' }}>
+          {label && (
+            <Typography 
+              variant="caption" 
+              display="block" 
+              sx={{ 
+                lineHeight: 1,
+                color: 'inherit' // Hereda el color del botón
+              }}
+            >
+              {label}
+            </Typography>
+          )}
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              fontWeight: 'bold', 
+              lineHeight: 1,
+              color: 'inherit' // Hereda el color del botón
+            }}
+          >
+            {formatOdds(odds.price)}
           </Typography>
-        )}
-        <Typography variant="body2" sx={{ fontWeight: 'bold', lineHeight: 1 }}>
-          {formatOdds(odds.price)}
-        </Typography>
-      </Box>
-    </Button>
-  );
+        </Box>
+      </Button>
+    );
+  };
 
   return (
     <TableRow sx={{ '&:hover': { backgroundColor: '#f8f9fa' } }}>
@@ -145,6 +183,8 @@ const EventRow = ({ event, selectedSport }) => {
             <OddsButton
               odds={organizedOdds.spread.away}
               label={organizedOdds.spread.away.handicap}
+              betType="spread"
+              selection="away"
               onClick={() => handleBetClick(
                 organizedOdds.spread.away,
                 'spread',
@@ -157,6 +197,8 @@ const EventRow = ({ event, selectedSport }) => {
             <OddsButton
               odds={organizedOdds.spread.home}
               label={organizedOdds.spread.home.handicap}
+              betType="spread"
+              selection="home"
               onClick={() => handleBetClick(
                 organizedOdds.spread.home,
                 'spread',
@@ -174,6 +216,8 @@ const EventRow = ({ event, selectedSport }) => {
           {organizedOdds.h2h.away && (
             <OddsButton
               odds={organizedOdds.h2h.away}
+              betType="h2h"
+              selection="away"
               onClick={() => handleBetClick(
                 organizedOdds.h2h.away,
                 'h2h',
@@ -185,6 +229,8 @@ const EventRow = ({ event, selectedSport }) => {
           {organizedOdds.h2h.home && (
             <OddsButton
               odds={organizedOdds.h2h.home}
+              betType="h2h"
+              selection="home"
               onClick={() => handleBetClick(
                 organizedOdds.h2h.home,
                 'h2h',
@@ -196,6 +242,8 @@ const EventRow = ({ event, selectedSport }) => {
           {organizedOdds.h2h.draw && (
             <OddsButton
               odds={organizedOdds.h2h.draw}
+              betType="h2h"
+              selection="draw"
               onClick={() => handleBetClick(
                 organizedOdds.h2h.draw,
                 'h2h',
@@ -214,6 +262,8 @@ const EventRow = ({ event, selectedSport }) => {
             <OddsButton
               odds={organizedOdds.totals.over}
               label={`O ${organizedOdds.totals.over.total}`}
+              betType="totals"
+              selection="over"
               onClick={() => handleBetClick(
                 organizedOdds.totals.over,
                 'totals',
@@ -226,6 +276,8 @@ const EventRow = ({ event, selectedSport }) => {
             <OddsButton
               odds={organizedOdds.totals.under}
               label={`U ${organizedOdds.totals.under.total}`}
+              betType="totals"
+              selection="under"
               onClick={() => handleBetClick(
                 organizedOdds.totals.under,
                 'totals',

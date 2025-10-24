@@ -22,7 +22,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 const EventCard = ({ event }) => {
-  const { addToBettingSlip } = useContext(BettingContext);
+  const { addToBettingSlip, bettingSlip } = useContext(BettingContext); // ✅ Agregar bettingSlip
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -64,25 +64,31 @@ const EventCard = ({ event }) => {
   const organizedOdds = organizeOdds(event.odds);
 
   const handleBetClick = (oddsData, betType, selection, description) => {
-  const betItem = {
-    id: `${event.id || event.api_event_id}-${betType}-${selection}`,
-    eventId: event.id,
-    api_event_id: event.api_event_id || event.id, // Incluir API ID
-    oddsId: oddsData.id,
-    matchup: `${event.away_team} @ ${event.home_team}`,
-    league: event.sport || event.competition,
-    selection: description,
-    price: oddsData.price,
-    marketType: betType,
-    eventTime: event.commence_time
-  };
+    const betItem = {
+      id: `${event.id || event.api_event_id}-${betType}-${selection}`,
+      eventId: event.id,
+      api_event_id: event.api_event_id || event.id,
+      oddsId: oddsData.id,
+      matchup: `${event.away_team} @ ${event.home_team}`,
+      league: event.sport || event.competition,
+      selection: description,
+      price: oddsData.price,
+      marketType: betType,
+      eventTime: event.commence_time
+    };
 
-  addToBettingSlip(betItem);
-};
+    addToBettingSlip(betItem);
+  };
 
   const formatOdds = (price) => {
     const odds = parseFloat(price);
     return odds >= 0 ? `+${odds}` : odds.toString();
+  };
+
+  // ✅ Función para verificar si una apuesta está seleccionada
+  const isBetSelected = (betType, selection) => {
+    const betId = `${event.id || event.api_event_id}-${betType}-${selection}`;
+    return bettingSlip.some(bet => bet.id === betId);
   };
 
   return (
@@ -155,9 +161,14 @@ const EventCard = ({ event }) => {
                     sx={{ 
                       py: 1,
                       fontSize: '0.75rem',
+                      // ✅ Estilos condicionales para tarjetas también
+                      backgroundColor: isBetSelected('h2h', 'away') ? theme.palette.primary.main : 'transparent',
+                      color: isBetSelected('h2h', 'away') ? 'white' : 'inherit',
+                      borderColor: isBetSelected('h2h', 'away') ? theme.palette.primary.main : 'rgba(0, 0, 0, 0.23)',
                       '&:hover': {
-                        backgroundColor: 'primary.main',
-                        color: 'white'
+                        backgroundColor: isBetSelected('h2h', 'away') ? theme.palette.primary.dark : theme.palette.primary.main,
+                        color: 'white',
+                        borderColor: theme.palette.primary.main
                       }
                     }}
                   >
@@ -188,9 +199,13 @@ const EventCard = ({ event }) => {
                     sx={{ 
                       py: 1,
                       fontSize: '0.75rem',
+                      backgroundColor: isBetSelected('h2h', 'draw') ? theme.palette.primary.main : 'transparent',
+                      color: isBetSelected('h2h', 'draw') ? 'white' : 'inherit',
+                      borderColor: isBetSelected('h2h', 'draw') ? theme.palette.primary.main : 'rgba(0, 0, 0, 0.23)',
                       '&:hover': {
-                        backgroundColor: 'primary.main',
-                        color: 'white'
+                        backgroundColor: isBetSelected('h2h', 'draw') ? theme.palette.primary.dark : theme.palette.primary.main,
+                        color: 'white',
+                        borderColor: theme.palette.primary.main
                       }
                     }}
                   >
@@ -221,9 +236,13 @@ const EventCard = ({ event }) => {
                     sx={{ 
                       py: 1,
                       fontSize: '0.75rem',
+                      backgroundColor: isBetSelected('h2h', 'home') ? theme.palette.primary.main : 'transparent',
+                      color: isBetSelected('h2h', 'home') ? 'white' : 'inherit',
+                      borderColor: isBetSelected('h2h', 'home') ? theme.palette.primary.main : 'rgba(0, 0, 0, 0.23)',
                       '&:hover': {
-                        backgroundColor: 'primary.main',
-                        color: 'white'
+                        backgroundColor: isBetSelected('h2h', 'home') ? theme.palette.primary.dark : theme.palette.primary.main,
+                        color: 'white',
+                        borderColor: theme.palette.primary.main
                       }
                     }}
                   >
